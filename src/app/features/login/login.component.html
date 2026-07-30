@@ -1,0 +1,56 @@
+<div class="login-card">
+  <p class="eyebrow">Session · Secure access</p>
+  <h1>Log in</h1>
+  <p class="subtitle">Choose a provider to continue, or use your email.</p>
+
+  <div class="oauth-group">
+
+  <button class="oauth-btn" type="button" (click)="loginWithProvider('github')">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 .5C5.73.5.75 5.48.75 11.75c0 5.02 3.26 9.28 7.78 10.78.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.17.69-3.84-1.34-3.84-1.34-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.75 1.18 1.75 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.53-2.53-.29-5.19-1.27-5.19-5.63 0-1.24.44-2.26 1.17-3.06-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.17a10.9 10.9 0 0 1 5.72 0c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.73.8 1.17 1.82 1.17 3.06 0 4.37-2.66 5.34-5.2 5.62.41.36.77 1.06.77 2.15 0 1.55-.01 2.8-.01 3.18 0 .3.2.66.79.55 4.51-1.51 7.77-5.76 7.77-10.78C23.25 5.48 18.27.5 12 .5z"/>
+    </svg>
+    Continue with GitHub
+  </button>
+
+
+  <button class="oauth-btn" type="button" (click)="loginWithProvider('gitlab-oidc')">
+    <svg viewBox="0 0 24 24" fill="#FC6D26">
+      <path d="M22.65 13.29L12 22.5 1.35 13.29a.9.9 0 0 1-.32-.99L4.6 1.8a.9.9 0 0 1 1.7-.02L12 12.6 17.7 1.78a.9.9 0 0 1 1.7.02l3.57 10.5a.9.9 0 0 1-.32.99z"/>
+    </svg>
+    Continue with GitLab
+  </button>
+
+
+  <button class="oauth-btn" type="button" (click)="loginWithProvider('bitbucket')">
+    <svg viewBox="0 0 24 24" fill="#2684FF">
+      <path d="M3 3h18l-2 18H5L3 3zm5.2 5l.8 8h6l.8-8H8.2z"/>
+    </svg>
+    Continue with Bitbucket
+  </button>
+
+
+  <button class="oauth-btn" type="button" (click)="loginWithProvider('azure')">
+    <svg viewBox="0 0 24 24">
+      <path fill="#0078D4" d="M2 5l9-3v17l-9-3V5zm11-3l9 3v14l-9 3V2z"/>
+    </svg>
+    Continue with Azure DevOps
+  </button>
+
+</div>
+
+  <div class="divider">or</div>
+
+  <form (ngSubmit)="onSubmit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="you@example.com" required>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" [(ngModel)]="password" placeholder="••••••••" required>
+    </div>
+    <button class="submit-btn" type="submit">Log in</button>
+  </form>
+
+  <p class="footer-note">Don't have an account yet? <a href="#">Create an account</a></p>
+</div>

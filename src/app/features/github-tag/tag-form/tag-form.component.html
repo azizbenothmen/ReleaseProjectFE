@@ -1,0 +1,61 @@
+<div class="tag-form-container">
+  <h2>Create a GitHub Tag</h2>
+
+  <form [formGroup]="tagForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+      <label for="owner">Owner</label>
+      <input id="owner" type="text" formControlName="owner" />
+    </div>
+
+    <div class="form-group">
+      <label for="repo">Repository</label>
+      <input id="repo" type="text" formControlName="repo" />
+      <small *ngIf="loadingBranches">Chargement des branches...</small>
+    </div>
+
+    <div class="form-group">
+      <label for="branch">Branch</label>
+      <select id="branch" formControlName="branch" [disabled]="loadingBranches || branches.length === 0">
+        <option value="" disabled selected>-- Choisir une branche --</option>
+        <option *ngFor="let b of branches" [value]="b.name">{{ b.name }}</option>
+      </select>
+      <small *ngIf="loadingCommits">Chargement des commits...</small>
+    </div>
+
+    <div class="form-group">
+      <label for="commit">Commit (SHA)</label>
+      <select id="commit" formControlName="commit" [disabled]="loadingCommits || commits.length === 0">
+        <option value="" disabled selected>-- Choisir un commit --</option>
+        <option *ngFor="let c of commits" [value]="c.sha">
+          {{ c.sha.substring(0, 7) }} — {{ truncateMessage(c.commit.message) }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="tagName">Tag name</label>
+      <input id="tagName" type="text" formControlName="tagName" />
+    </div>
+
+    <div class="form-group">
+      <label for="message">Message</label>
+      <textarea id="message" formControlName="message"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="taggerName">Tagger name</label>
+      <input id="taggerName" type="text" formControlName="taggerName" />
+    </div>
+
+    <div class="form-group">
+      <label for="taggerEmail">Tagger email</label>
+      <input id="taggerEmail" type="email" formControlName="taggerEmail" />
+    </div>
+
+    <button type="submit" [disabled]="tagForm.invalid || loading">
+      {{ loading ? 'Creating...' : 'Create tag' }}
+    </button>
+
+  </form>
+</div>

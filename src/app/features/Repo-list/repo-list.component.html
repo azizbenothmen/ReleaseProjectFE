@@ -1,0 +1,63 @@
+<div class="page-layout">
+
+  <div class="tag-form-container repo-container">
+    <h2>Import Git Repository</h2>
+
+    <div class="form-group">
+      <label>Rechercher</label>
+      <input
+        type="text"
+        placeholder="Search repositories..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+
+    <div *ngIf="loading" class="loading">Chargement des repositories...</div>
+
+    <div class="repo-list" *ngIf="!loading">
+      <div class="repo-row" *ngFor="let repo of filteredRepos">
+        <div class="repo-info">
+          <span class="repo-name">{{ repo.name }}</span>
+          <span class="repo-owner">· {{ repo.owner?.login }}</span>
+        </div>
+
+        <button type="button" (click)="importRepo(repo)">
+          Import
+        </button>
+      </div>
+
+      <div *ngIf="filteredRepos.length === 0" class="empty-state">
+        Aucun repository trouvé.
+      </div>
+    </div>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+
+  <div class="tag-form-container repo-container">
+    <h2>Repos</h2>
+
+    <div *ngIf="loadingImported" class="loading">Chargement...</div>
+
+    <div class="repo-list" *ngIf="!loadingImported && importedRepos.length > 0; else emptyImported">
+      <div class="repo-row" *ngFor="let repo of importedRepos">
+        <div class="repo-info">
+          <span class="repo-name">{{ repo.name }}</span>
+          <span class="repo-owner">· {{ repo.owner?.login }}</span>
+        </div>
+
+        <button type="button" (click)="goToTag(repo)">
+          Tagger
+        </button>
+      </div>
+    </div>
+
+    <ng-template #emptyImported>
+      <div class="empty-state" *ngIf="!loadingImported">Nothing Here</div>
+    </ng-template>
+
+    <div class="error" *ngIf="importedErrorMessage">{{ importedErrorMessage }}</div>
+  </div>
+
+</div>

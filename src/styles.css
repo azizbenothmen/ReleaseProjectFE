@@ -1,0 +1,183 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #051C3F;
+  background-image:
+    linear-gradient(#0A2A5C 1px, transparent 1px),
+    linear-gradient(90deg, #0A2A5C 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center;
+  background-attachment: fixed;
+  color: #F5F5F5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #FFFFFF;
+}
+
+a {
+  color: #08BAEF;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: #D6037F;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A1F42;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1C3A66;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #08BAEF;
+}
+
+
+.theme-card {
+  background-color: #0A1F42;
+  border: 1px solid #1C3A66;
+  border-radius: 6px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #08BAEF, #D6037F);
+}
+
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s ease, transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.theme-btn-primary {
+  background: linear-gradient(90deg, #08BAEF, #D6037F);
+  color: #FFFFFF;
+}
+
+.theme-btn-primary:hover {
+  opacity: 0.9;
+}
+
+.theme-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.theme-btn-secondary {
+  background-color: #12294F;
+  border: 1px solid #1C3A66;
+  color: #F5F5F5;
+}
+
+.theme-btn-secondary:hover {
+  border-color: #08BAEF;
+  background-color: #15315C;
+}
+
+.theme-input {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #12294F;
+  border: 1px solid #1C3A66;
+  border-radius: 3px;
+  color: #F5F5F5;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+}
+
+.theme-input::placeholder {
+  color: #4A6FA5;
+}
+
+.theme-input:focus {
+  outline: none;
+  border-color: #08BAEF;
+}
+
+.theme-label {
+  display: block;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #7FA8D9;
+  margin-bottom: 8px;
+}
+
+.theme-eyebrow {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #08BAEF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #08BAEF;
+  display: inline-block;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.theme-fade-up {
+  animation: fadeUp 0.5s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-fade-up {
+    animation: none;
+  }
+}
