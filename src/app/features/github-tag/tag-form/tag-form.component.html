@@ -44,14 +44,14 @@
     </div>
 
     <div class="form-group">
-      <label for="taggerName">Tagger name</label>
-      <input id="taggerName" type="text" formControlName="taggerName" />
-    </div>
+  <label for="taggerName">Tagger name</label>
+  <input id="taggerName" type="text" formControlName="taggerName" readonly />
+</div>
 
-    <div class="form-group">
-      <label for="taggerEmail">Tagger email</label>
-      <input id="taggerEmail" type="email" formControlName="taggerEmail" />
-    </div>
+<div class="form-group">
+  <label for="taggerEmail">Tagger email</label>
+  <input id="taggerEmail" type="email" formControlName="taggerEmail" readonly />
+</div>
 
     <button type="submit" [disabled]="tagForm.invalid || loading">
       {{ loading ? 'Creating...' : 'Create tag' }}
