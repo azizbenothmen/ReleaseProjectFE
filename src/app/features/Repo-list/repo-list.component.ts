@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-// Structure utilisée pour l'affichage (correspond au JSON GitHub, avec owner.login imbriqué)
 export interface RepoDto {
   id: number;
   nodeId: string;
@@ -15,7 +14,6 @@ export interface RepoDto {
   };
 }
 
-// Structure EXACTE attendue par le backend (doit matcher l'entité RepoUser)
 interface RepoPayload {
   id: number;
   nodeId: string;
@@ -80,7 +78,6 @@ export class RepoListComponent implements OnInit {
     this.loadingImported = true;
     this.importedErrorMessage = null;
 
-    // Le backend renvoie une structure plate (loginOwner) -> on la remappe en owner.login pour l'affichage
     this.http.get<RepoPayload[]>(`http://localhost:8085/repoBd`)
       .subscribe({
         next: (data) => {
@@ -112,7 +109,6 @@ export class RepoListComponent implements OnInit {
     this.importingRepoId = repo.id;
     this.importedErrorMessage = null;
 
-    // On aplatit owner.login -> loginOwner avant d'envoyer au backend (doit matcher l'entité Java)
     const payload: RepoPayload = this.toRepoPayload(repo);
 
     this.http.post<RepoPayload>(`http://localhost:8085/repoCreation`, payload)

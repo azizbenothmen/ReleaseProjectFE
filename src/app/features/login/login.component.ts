@@ -39,12 +39,12 @@ export class LoginComponent {
       next: (user) => {
         this.isLoading = false;
         this.toastr.success(`Bienvenue, ${user.username} !`, 'Connexion réussie');
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
         this.router.navigateByUrl(returnUrl);
       },
       error: (err) => {
         this.isLoading = false;
-        const msg = err.error?.message || 'Identifiants invalides ou erreur serveur';
+        const msg =  'Identifiants invalides ';
         this.toastr.error(msg, 'Échec de connexion');
       },
     });
