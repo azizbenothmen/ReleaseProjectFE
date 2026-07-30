@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { GithubService, Branch, Commit } from '../../../core/services/github.service';
 import { CreateTagRequest } from '../../../models/tag.model';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { combineLatest, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-tag-form',
@@ -13,7 +14,9 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   templateUrl: './tag-form.component.html',
   styleUrls: ['./tag-form.component.css']
 })
-export class TagFormComponent implements OnDestroy {
+export class TagFormComponent implements OnInit, OnDestroy {
+
+  private authService = inject(AuthService);
 
   tagForm: FormGroup;
   loading = false;
@@ -38,11 +41,10 @@ export class TagFormComponent implements OnDestroy {
       commit: ['', Validators.required],
       tagName: ['', Validators.required],
       message: ['', Validators.required],
-      taggerName: ['', Validators.required],
-      taggerEmail: ['', [Validators.required, Validators.email]]
+      taggerName: [{ value: '', disabled: true }, Validators.required],
+      taggerEmail: [{ value: '', disabled: true }, [Validators.required, Validators.email]]
     });
 
-    // Auto-fetch branches whenever owner + repo are both filled in
     combineLatest([
       this.tagForm.get('owner')!.valueChanges,
       this.tagForm.get('repo')!.valueChanges
@@ -51,7 +53,6 @@ export class TagFormComponent implements OnDestroy {
       distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1]),
       takeUntil(this.destroy$)
     ).subscribe(([owner, repo]) => {
-      // reset downstream state whenever owner/repo changes
       this.branches = [];
       this.commits = [];
       this.tagForm.get('branch')?.setValue('', { emitEvent: false });
@@ -63,7 +64,6 @@ export class TagFormComponent implements OnDestroy {
       }
     });
 
-    // Auto-fetch commits whenever branch changes
     this.tagForm.get('branch')?.valueChanges.pipe(
       distinctUntilChanged(),
       takeUntil(this.destroy$)
@@ -81,9 +81,42 @@ export class TagFormComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.loadCurrentUser();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private loadCurrentUser(): void {
+  const cached = this.authService.currentUser();
+  if (cached) {
+    this.patchTaggerFields(cached.username, cached.email);
+    return;
+  }
+
+  this.authService.getCurrentUser().pipe(
+    takeUntil(this.destroy$)
+  ).subscribe({
+    next: (user) => {
+      if (user) {
+        this.patchTaggerFields(user.username, user.email);
+      } else {
+        this.toastr.error("Impossible de récupérer les informations de l'utilisateur connecté.");
+      }
+      this.cdr.detectChanges();
+    }
+  });
+}
+
+  private patchTaggerFields(name: string, email: string): void {
+    this.tagForm.patchValue({
+      taggerName: name,
+      taggerEmail: email
+    });
+    this.cdr.detectChanges();
   }
 
   loadBranches(owner: string, repo: string): void {
@@ -145,7 +178,8 @@ export class TagFormComponent implements OnDestroy {
 
     this.loading = true;
 
-    const { owner, repo, branch, commit, tagName, message, taggerName, taggerEmail } = this.tagForm.value;
+    // getRawValue() car taggerName/taggerEmail sont disabled -> exclus de .value
+    const { owner, repo, branch, commit, tagName, message, taggerName, taggerEmail } = this.tagForm.getRawValue();
 
     const tagRequest: CreateTagRequest = {
       tag: tagName,

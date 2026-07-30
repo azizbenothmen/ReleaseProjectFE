@@ -1,0 +1,18 @@
+<div class="shell">
+
+  <!-- Main content -->
+  <main class="main">
+    <p class="eyebrow">Tableau de bord</p>
+    <h1>Vue d'ensemble</h1>
+    <p class="subtitle">Statistiques générales de votre espace de travail.</p>
+
+    <section class="stat-grid">
+      <article class="stat-card" *ngFor="let s of stats; let i = index" [style.animation-delay.ms]="i * 60">
+        <p class="stat-label">{{ s.label }}</p>
+        <p class="stat-value">{{ s.value }}</p>
+        <p class="stat-delta" [class.negative]="!s.positive">{{ s.delta }}</p>
+      </article>
+    </section>
+  </main>
+
+</div>

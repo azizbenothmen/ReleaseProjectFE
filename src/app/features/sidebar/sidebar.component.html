@@ -1,0 +1,42 @@
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">Release-Plateform</span>
+  </div>
+
+  <nav class="nav-group">
+    
+      <a class="nav-btn"
+      routerLink="/projets"
+      routerLinkActive="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="4" width="18" height="14" rx="2"/>
+        <path d="M3 9h18"/>
+      </svg>
+      <span>Projets</span>
+    </a>
+
+    
+      <a class="nav-btn"
+      routerLink="/repo"
+      routerLinkActive="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M7 3v18"/>
+        <circle cx="7" cy="6" r="2.2"/>
+        <circle cx="7" cy="18" r="2.2"/>
+        <path d="M7 8c0 5 10 3 10 8"/>
+        <circle cx="17" cy="18" r="2.2"/>
+      </svg>
+      <span>Repo</span>
+    </a>
+  </nav>
+
+  <button type="button" class="nav-btn logout-btn" (click)="logout()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <path d="M16 17l5-5-5-5"/>
+      <path d="M21 12H9"/>
+    </svg>
+    <span>Déconnexion</span>
+  </button>
+</aside>

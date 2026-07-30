@@ -14,15 +14,11 @@ export class AuthService {
 
   private readonly apiUrl = '/api/auth';
 
-  // État utilisateur conservé exclusivement en mémoire (Signal)
   readonly currentUser = signal<User | null>(null);
   readonly isAuthenticated = computed(() => this.currentUser() !== null);
   readonly isLoading = signal<boolean>(true);
 
-  /**
-   * Connexion utilisateur
-   * Les cookies HttpOnly access_token et refresh_token sont positionnés par le backend via Set-Cookie
-   */
+
   login(credentials: LoginCredentials): Observable<User> {
     this.isLoading.set(true);
     return this.http
@@ -40,9 +36,7 @@ export class AuthService {
       );
   }
 
-  /**
-   * Récupère le profil utilisateur actuellement connecté depuis /api/auth/me
-   */
+  
   getCurrentUser(): Observable<User | null> {
     return this.http.get<User>(`${this.apiUrl}/me`, { withCredentials: true }).pipe(
       tap((user) => {
@@ -57,21 +51,16 @@ export class AuthService {
     );
   }
 
-  /**
-   * Renouvelle les cookies access_token et refresh_token
-   */
+  
   refreshToken(): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/refresh`, {}, { withCredentials: true });
   }
 
-  /**
-   * Déconnexion utilisateur : révoque la session backend et efface l'état en mémoire
-   */
   logout(): void {
     this.http
       .post(`${this.apiUrl}/logout`, {}, { withCredentials: true })
       .pipe(
-        catchError(() => of(null)) // Réinitialiser l'état même si le backend renvoie une erreur
+        catchError(() => of(null)) 
       )
       .subscribe(() => {
         this.clearUserState();
@@ -79,9 +68,7 @@ export class AuthService {
       });
   }
 
-  /**
-   * Efface l'état utilisateur en mémoire
-   */
+  
   clearUserState(): void {
     this.currentUser.set(null);
     this.isLoading.set(false);
