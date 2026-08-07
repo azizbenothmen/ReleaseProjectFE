@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { combineLatest, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tag-form',
@@ -32,7 +33,8 @@ export class TagFormComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private githubService: GithubService,
     private toastr: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {
     this.tagForm = this.fb.group({
       owner: ['', Validators.required],
@@ -83,6 +85,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCurrentUser();
+    this.loadTagContextFromNavigation();
   }
 
   ngOnDestroy(): void {
@@ -90,26 +93,36 @@ export class TagFormComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadCurrentUser(): void {
-  const cached = this.authService.currentUser();
-  if (cached) {
-    this.patchTaggerFields(cached.username, cached.email);
-    return;
+  private loadTagContextFromNavigation(): void {
+    const state = history.state as { owner?: string; repo?: string };
+    if (state?.owner || state?.repo) {
+      this.tagForm.patchValue({
+        owner: state.owner ?? '',
+        repo: state.repo ?? ''
+      });
+    }
   }
 
-  this.authService.getCurrentUser().pipe(
-    takeUntil(this.destroy$)
-  ).subscribe({
-    next: (user) => {
-      if (user) {
-        this.patchTaggerFields(user.username, user.email);
-      } else {
-        this.toastr.error("Impossible de récupérer les informations de l'utilisateur connecté.");
-      }
-      this.cdr.detectChanges();
+  private loadCurrentUser(): void {
+    const cached = this.authService.currentUser();
+    if (cached) {
+      this.patchTaggerFields(cached.username, cached.email);
+      return;
     }
-  });
-}
+
+    this.authService.getCurrentUser().pipe(
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (user) => {
+        if (user) {
+          this.patchTaggerFields(user.username, user.email);
+        } else {
+          this.toastr.error("Impossible de récupérer les informations de l'utilisateur connecté.");
+        }
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   private patchTaggerFields(name: string, email: string): void {
     this.tagForm.patchValue({

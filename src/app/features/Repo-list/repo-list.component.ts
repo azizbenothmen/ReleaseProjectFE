@@ -22,6 +22,11 @@ interface RepoPayload {
   loginOwner: string;
 }
 
+interface ImportedRepoDetails {
+  loginOwner: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-repo-list',
   imports: [CommonModule, FormsModule],
@@ -43,6 +48,13 @@ export class RepoListComponent implements OnInit {
 
   importingRepoId: number | null = null;
 
+  // --- Pagination : liste "à importer" ---
+  readonly pageSize = 10; // ajuste selon ton besoin
+  currentPage = 1;
+
+  // --- Pagination : liste "repos importés" ---
+  currentPageImported = 1;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -63,6 +75,7 @@ export class RepoListComponent implements OnInit {
         next: (data) => {
           this.repos = data;
           this.filteredRepos = data;
+          this.currentPage = 1;
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -82,6 +95,7 @@ export class RepoListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.importedRepos = data.map(r => this.toRepoDto(r));
+          this.currentPageImported = 1;
           this.loadingImported = false;
           this.cdr.detectChanges();
         },
@@ -98,6 +112,7 @@ export class RepoListComponent implements OnInit {
     this.filteredRepos = this.repos.filter(r =>
       r.name.toLowerCase().includes(term)
     );
+    this.currentPage = 1; // reset à la page 1 à chaque recherche
     this.cdr.detectChanges();
   }
 
@@ -127,10 +142,62 @@ export class RepoListComponent implements OnInit {
   }
 
   goToTag(repo: RepoDto): void {
-    this.router.navigate(['/'], { state: { repo } });
+    this.http.get<ImportedRepoDetails>(`http://localhost:8085/importedRepo/${repo.name}`)
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['/'], {
+            state: {
+              owner: data.loginOwner,
+              repo: data.name
+            }
+          });
+        },
+        error: (err) => {
+          this.importedErrorMessage = this.extractErrorMessage(err);
+          this.cdr.detectChanges();
+        }
+      });
   }
 
-  // --- Mapping helpers ---
+  // ================= PAGINATION : liste "à importer" =================
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredRepos.length / this.pageSize));
+  }
+
+  get pagedRepos(): RepoDto[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredRepos.slice(start, start + this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
+
+  // ============ PAGINATION : liste "repos importés" ============
+
+  get totalPagesImported(): number {
+    return Math.max(1, Math.ceil(this.importedRepos.length / this.pageSize));
+  }
+
+  get pagedImportedRepos(): RepoDto[] {
+    const start = (this.currentPageImported - 1) * this.pageSize;
+    return this.importedRepos.slice(start, start + this.pageSize);
+  }
+
+  get pageNumbersImported(): number[] {
+    return Array.from({ length: this.totalPagesImported }, (_, i) => i + 1);
+  }
+
+  goToPageImported(page: number): void {
+    if (page < 1 || page > this.totalPagesImported) return;
+    this.currentPageImported = page;
+  }
 
   private toRepoPayload(repo: RepoDto): RepoPayload {
     return {

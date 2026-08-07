@@ -1,0 +1,106 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h2>Projets</h2>
+    <button type="button" class="btn-primary" (click)="openPanel()">
+      + Créer un projet
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="state-message">Chargement des projets...</div>
+  <div *ngIf="errorMessage" class="state-message error">{{ errorMessage }}</div>
+
+  <div class="table-wrapper" *ngIf="!loading && !errorMessage">
+    <table class="data-table" *ngIf="projects.length > 0">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Statut</th>
+          <th>Owner</th>
+          <th>Créé le</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let project of projects">
+          <td class="cell-strong">{{ project.name }}</td>
+          <td class="cell-muted">{{ project.description || '—' }}</td>
+          <td>
+            <span class="badge" [ngClass]="'badge-' + project.status.toLowerCase()">
+              {{ project.status }}
+            </span>
+          </td>
+          <td>{{ project.owner }}</td>
+          <td class="cell-muted">{{ project.createdAt | date:'dd/MM/yyyy' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="projects.length === 0">
+      Aucun projet pour le moment. Cliquez sur "Créer un projet" pour commencer.
+    </div>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" *ngIf="isPanelOpen" (click)="closePanel()"></div>
+
+  <!-- Panneau latéral de création -->
+  <div class="side-panel" [class.open]="isPanelOpen">
+    <div class="side-panel-header">
+      <h3>Créer un projet</h3>
+      <button type="button" class="btn-close" (click)="closePanel()" aria-label="Fermer">×</button>
+    </div>
+
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="side-panel-body">
+
+      <div class="form-group">
+        <label for="name">Nom du projet</label>
+        <input id="name" type="text" formControlName="name" placeholder="Ex: Mon super projet" />
+        <div class="field-error" *ngIf="name?.invalid && name?.touched">
+          <span *ngIf="name?.errors?.['required']">Le nom est requis.</span>
+          <span *ngIf="name?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" placeholder="Description du projet (optionnel)"></textarea>
+        <div class="field-error" *ngIf="description?.invalid && description?.touched">
+          <span *ngIf="description?.errors?.['maxlength']">1000 caractères maximum.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Statut</label>
+        <select id="status" formControlName="status">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Owner</label>
+        <div class="owner-display">
+          <span *ngIf="loadingOwner">Récupération de l'utilisateur...</span>
+          <span *ngIf="!loadingOwner && projectForm.get('owner')?.value">
+            {{ projectForm.get('owner')?.value }}
+          </span>
+          <span *ngIf="!loadingOwner && !projectForm.get('owner')?.value" class="cell-muted">
+            Non déterminé
+          </span>
+        </div>
+        <div class="field-error" *ngIf="ownerErrorMessage">{{ ownerErrorMessage }}</div>
+      </div>
+
+      <div class="form-error-banner" *ngIf="formErrorMessage">{{ formErrorMessage }}</div>
+
+      <div class="side-panel-actions">
+        <button type="button" class="btn-secondary" (click)="closePanel()">Annuler</button>
+        <button type="submit" class="btn-primary" [disabled]="submitting || loadingOwner">
+          {{ submitting ? 'Création...' : 'Créer le projet' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
