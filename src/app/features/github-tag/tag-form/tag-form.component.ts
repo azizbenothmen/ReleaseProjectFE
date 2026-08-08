@@ -191,7 +191,6 @@ export class TagFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    // getRawValue() car taggerName/taggerEmail sont disabled -> exclus de .value
     const { owner, repo, branch, commit, tagName, message, taggerName, taggerEmail } = this.tagForm.getRawValue();
 
     const tagRequest: CreateTagRequest = {
@@ -211,6 +210,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.toastr.success(`Tag "${tagRequest.tag}" créé avec succès !`);
         this.cdr.detectChanges();
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         this.loading = false;

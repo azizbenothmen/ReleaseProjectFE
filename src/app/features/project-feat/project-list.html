@@ -2,7 +2,7 @@
 
   <div class="page-header">
     <h2>Projets</h2>
-    <button type="button" class="btn-primary" (click)="openPanel()">
+    <button type="button" class="btn-primary" (click)="openModal()">
       + Créer un projet
     </button>
   </div>
@@ -19,6 +19,7 @@
           <th>Statut</th>
           <th>Owner</th>
           <th>Créé le</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -32,6 +33,14 @@
           </td>
           <td>{{ project.owner }}</td>
           <td class="cell-muted">{{ project.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td>
+            <button
+              type="button"
+              class="btn-secondary btn-import"
+              (click)="goToImportRepo(project)">
+              Importer un repo
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -41,17 +50,16 @@
     </div>
   </div>
 
-  <!-- Overlay -->
-  <div class="overlay" *ngIf="isPanelOpen" (click)="closePanel()"></div>
 
-  <!-- Panneau latéral de création -->
-  <div class="side-panel" [class.open]="isPanelOpen">
-    <div class="side-panel-header">
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
       <h3>Créer un projet</h3>
-      <button type="button" class="btn-close" (click)="closePanel()" aria-label="Fermer">×</button>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Fermer">×</button>
     </div>
 
-    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="side-panel-body">
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="modal-body">
 
       <div class="form-group">
         <label for="name">Nom du projet</label>
@@ -93,8 +101,8 @@
 
       <div class="form-error-banner" *ngIf="formErrorMessage">{{ formErrorMessage }}</div>
 
-      <div class="side-panel-actions">
-        <button type="button" class="btn-secondary" (click)="closePanel()">Annuler</button>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>
         <button type="submit" class="btn-primary" [disabled]="submitting || loadingOwner">
           {{ submitting ? 'Création...' : 'Créer le projet' }}
         </button>
@@ -102,5 +110,6 @@
 
     </form>
   </div>
+</div>
 
 </div>

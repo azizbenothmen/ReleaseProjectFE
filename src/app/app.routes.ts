@@ -16,11 +16,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', component: TagFormComponent },
-      { path: 'repo', component: RepoListComponent },
+      { path: 'repo/:id', component: RepoListComponent },
       { path: 'home', component: HomeComponent },
       {path:'projet',component:ProjectListComponent}
     ]
   },
 
-  { path: '**', redirectTo: '' },
 ];

@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export interface RepoDto {
   id: number;
@@ -48,22 +48,25 @@ export class RepoListComponent implements OnInit {
 
   importingRepoId: number | null = null;
 
-  // --- Pagination : liste "à importer" ---
-  readonly pageSize = 10; // ajuste selon ton besoin
+  readonly pageSize = 10; 
   currentPage = 1;
+  projectId: string | null = null;
 
-  // --- Pagination : liste "repos importés" ---
+
   currentPageImported = 1;
 
   constructor(
     private http: HttpClient,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.projectId = this.route.snapshot.paramMap.get('id'); 
     this.fetchRepos();
     this.fetchImportedRepos();
+    
   }
 
   fetchRepos(): void {
@@ -91,7 +94,7 @@ export class RepoListComponent implements OnInit {
     this.loadingImported = true;
     this.importedErrorMessage = null;
 
-    this.http.get<RepoPayload[]>(`http://localhost:8085/repoBd`)
+    this.http.get<RepoPayload[]>(`http://localhost:8085/repoProject/${this.projectId}`)
       .subscribe({
         next: (data) => {
           this.importedRepos = data.map(r => this.toRepoDto(r));
@@ -112,7 +115,7 @@ export class RepoListComponent implements OnInit {
     this.filteredRepos = this.repos.filter(r =>
       r.name.toLowerCase().includes(term)
     );
-    this.currentPage = 1; // reset à la page 1 à chaque recherche
+    this.currentPage = 1; 
     this.cdr.detectChanges();
   }
 
@@ -126,7 +129,7 @@ export class RepoListComponent implements OnInit {
 
     const payload: RepoPayload = this.toRepoPayload(repo);
 
-    this.http.post<RepoPayload>(`http://localhost:8085/repoCreation`, payload)
+    this.http.post<RepoPayload>(`http://localhost:8085/repoCreation/${this.projectId}`, payload)
       .subscribe({
         next: (savedRepo) => {
           this.importedRepos.push(this.toRepoDto(savedRepo));
@@ -159,7 +162,6 @@ export class RepoListComponent implements OnInit {
       });
   }
 
-  // ================= PAGINATION : liste "à importer" =================
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredRepos.length / this.pageSize));
@@ -179,7 +181,6 @@ export class RepoListComponent implements OnInit {
     this.currentPage = page;
   }
 
-  // ============ PAGINATION : liste "repos importés" ============
 
   get totalPagesImported(): number {
     return Math.max(1, Math.ceil(this.importedRepos.length / this.pageSize));
