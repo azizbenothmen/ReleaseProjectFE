@@ -16,7 +16,7 @@
     <div *ngIf="loading" class="loading">Chargement des repositories...</div>
 
     <div class="repo-list" *ngIf="!loading">
-      <div class="repo-row" *ngFor="let repo of filteredRepos">
+      <div class="repo-row" *ngFor="let repo of pagedRepos">
         <div class="repo-info">
           <span class="repo-name">{{ repo.name }}</span>
           <span class="repo-owner">· {{ repo.owner?.login }}</span>
@@ -32,6 +32,30 @@
       </div>
     </div>
 
+    <div class="pagination" *ngIf="!loading && filteredRepos.length > 0">
+      <button
+        type="button"
+        class="page-nav"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >‹</button>
+
+      <button
+        type="button"
+        class="page-number"
+        *ngFor="let page of pageNumbers"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)"
+      >{{ page }}</button>
+
+      <button
+        type="button"
+        class="page-nav"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >›</button>
+    </div>
+
     <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
   </div>
 
@@ -41,7 +65,7 @@
     <div *ngIf="loadingImported" class="loading">Chargement...</div>
 
     <div class="repo-list" *ngIf="!loadingImported && importedRepos.length > 0; else emptyImported">
-      <div class="repo-row" *ngFor="let repo of importedRepos">
+      <div class="repo-row" *ngFor="let repo of pagedImportedRepos">
         <div class="repo-info">
           <span class="repo-name">{{ repo.name }}</span>
           <span class="repo-owner">· {{ repo.owner?.login }}</span>
@@ -51,6 +75,30 @@
           Tagger
         </button>
       </div>
+    </div>
+
+    <div class="pagination" *ngIf="!loadingImported && importedRepos.length > 0">
+      <button
+        type="button"
+        class="page-nav"
+        (click)="goToPageImported(currentPageImported - 1)"
+        [disabled]="currentPageImported === 1"
+      >‹</button>
+
+      <button
+        type="button"
+        class="page-number"
+        *ngFor="let page of pageNumbersImported"
+        [class.active]="page === currentPageImported"
+        (click)="goToPageImported(page)"
+      >{{ page }}</button>
+
+      <button
+        type="button"
+        class="page-nav"
+        (click)="goToPageImported(currentPageImported + 1)"
+        [disabled]="currentPageImported === totalPagesImported"
+      >›</button>
     </div>
 
     <ng-template #emptyImported>

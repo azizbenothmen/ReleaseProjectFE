@@ -5,12 +5,12 @@
 
     <div class="form-group">
       <label for="owner">Owner</label>
-      <input id="owner" type="text" formControlName="owner" />
+      <input id="owner" type="text" formControlName="owner" readonly/>
     </div>
 
     <div class="form-group">
       <label for="repo">Repository</label>
-      <input id="repo" type="text" formControlName="repo" />
+      <input id="repo" type="text" formControlName="repo" readonly/>
       <small *ngIf="loadingBranches">Chargement des branches...</small>
     </div>
 

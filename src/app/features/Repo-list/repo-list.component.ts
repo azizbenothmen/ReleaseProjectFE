@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 export interface RepoDto {
   id: number;
@@ -20,6 +20,11 @@ interface RepoPayload {
   name: string;
   fullName: string;
   loginOwner: string;
+}
+
+interface ImportedRepoDetails {
+  loginOwner: string;
+  name: string;
 }
 
 @Component({
@@ -43,15 +48,25 @@ export class RepoListComponent implements OnInit {
 
   importingRepoId: number | null = null;
 
+  readonly pageSize = 10; 
+  currentPage = 1;
+  projectId: string | null = null;
+
+
+  currentPageImported = 1;
+
   constructor(
     private http: HttpClient,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.projectId = this.route.snapshot.paramMap.get('id'); 
     this.fetchRepos();
     this.fetchImportedRepos();
+    
   }
 
   fetchRepos(): void {
@@ -63,6 +78,7 @@ export class RepoListComponent implements OnInit {
         next: (data) => {
           this.repos = data;
           this.filteredRepos = data;
+          this.currentPage = 1;
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -78,10 +94,11 @@ export class RepoListComponent implements OnInit {
     this.loadingImported = true;
     this.importedErrorMessage = null;
 
-    this.http.get<RepoPayload[]>(`http://localhost:8085/repoBd`)
+    this.http.get<RepoPayload[]>(`http://localhost:8085/repoProject/${this.projectId}`)
       .subscribe({
         next: (data) => {
           this.importedRepos = data.map(r => this.toRepoDto(r));
+          this.currentPageImported = 1;
           this.loadingImported = false;
           this.cdr.detectChanges();
         },
@@ -98,6 +115,7 @@ export class RepoListComponent implements OnInit {
     this.filteredRepos = this.repos.filter(r =>
       r.name.toLowerCase().includes(term)
     );
+    this.currentPage = 1; 
     this.cdr.detectChanges();
   }
 
@@ -111,7 +129,7 @@ export class RepoListComponent implements OnInit {
 
     const payload: RepoPayload = this.toRepoPayload(repo);
 
-    this.http.post<RepoPayload>(`http://localhost:8085/repoCreation`, payload)
+    this.http.post<RepoPayload>(`http://localhost:8085/repoCreation/${this.projectId}`, payload)
       .subscribe({
         next: (savedRepo) => {
           this.importedRepos.push(this.toRepoDto(savedRepo));
@@ -127,10 +145,60 @@ export class RepoListComponent implements OnInit {
   }
 
   goToTag(repo: RepoDto): void {
-    this.router.navigate(['/'], { state: { repo } });
+    this.http.get<ImportedRepoDetails>(`http://localhost:8085/importedRepo/${repo.name}`)
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['/'], {
+            state: {
+              owner: data.loginOwner,
+              repo: data.name
+            }
+          });
+        },
+        error: (err) => {
+          this.importedErrorMessage = this.extractErrorMessage(err);
+          this.cdr.detectChanges();
+        }
+      });
   }
 
-  // --- Mapping helpers ---
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredRepos.length / this.pageSize));
+  }
+
+  get pagedRepos(): RepoDto[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredRepos.slice(start, start + this.pageSize);
+  }
+
+  get pageNumbers(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
+
+
+  get totalPagesImported(): number {
+    return Math.max(1, Math.ceil(this.importedRepos.length / this.pageSize));
+  }
+
+  get pagedImportedRepos(): RepoDto[] {
+    const start = (this.currentPageImported - 1) * this.pageSize;
+    return this.importedRepos.slice(start, start + this.pageSize);
+  }
+
+  get pageNumbersImported(): number[] {
+    return Array.from({ length: this.totalPagesImported }, (_, i) => i + 1);
+  }
+
+  goToPageImported(page: number): void {
+    if (page < 1 || page > this.totalPagesImported) return;
+    this.currentPageImported = page;
+  }
 
   private toRepoPayload(repo: RepoDto): RepoPayload {
     return {
