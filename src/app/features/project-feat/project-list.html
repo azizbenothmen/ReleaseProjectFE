@@ -10,40 +10,43 @@
   <div *ngIf="loading" class="state-message">Chargement des projets...</div>
   <div *ngIf="errorMessage" class="state-message error">{{ errorMessage }}</div>
 
-  <div class="table-wrapper" *ngIf="!loading && !errorMessage">
-    <table class="data-table" *ngIf="projects.length > 0">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Description</th>
-          <th>Statut</th>
-          <th>Owner</th>
-          <th>Créé le</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let project of projects">
-          <td class="cell-strong">{{ project.name }}</td>
-          <td class="cell-muted">{{ project.description || '—' }}</td>
-          <td>
+  <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
+    <div class="cards-grid" *ngIf="projects.length > 0">
+      <div class="project-card" *ngFor="let project of projects">
+
+        <div class="card-header">
+          <div class="card-title-group">
+            <h3 class="card-title">{{ project.name }}</h3>
             <span class="badge" [ngClass]="'badge-' + project.status.toLowerCase()">
               {{ project.status }}
             </span>
-          </td>
-          <td>{{ project.owner }}</td>
-          <td class="cell-muted">{{ project.createdAt | date:'dd/MM/yyyy' }}</td>
-          <td>
-            <button
-              type="button"
-              class="btn-secondary btn-import"
-              (click)="goToImportRepo(project)">
-              Importer un repo
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </div>
+        </div>
+
+        <p class="card-description">{{ project.description || 'Aucune description' }}</p>
+
+        <div class="card-meta">
+          <span class="meta-item">
+            <span class="meta-label">Owner</span>
+            <span class="meta-value">{{ project.owner }}</span>
+          </span>
+          <span class="meta-item">
+            <span class="meta-label">Créé le</span>
+            <span class="meta-value">{{ project.createdAt | date:'dd/MM/yyyy' }}</span>
+          </span>
+        </div>
+
+        <div class="card-actions">
+          <button
+            type="button"
+            class="btn-secondary btn-import"
+            (click)="goToImportRepo(project)">
+            Importer un repo
+          </button>
+        </div>
+
+      </div>
+    </div>
 
     <div class="empty-state" *ngIf="projects.length === 0">
       Aucun projet pour le moment. Cliquez sur "Créer un projet" pour commencer.
