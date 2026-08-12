@@ -23,4 +23,8 @@ export class ProjectService {
   getCurrentUser(): Observable<CurrentUser> {
     return this.http.get<CurrentUser>(`${this.baseUrl}/api/auth/me`);
   }
+
+  deleteProject(id: number | string): Observable<string> {
+  return this.http.get(`${this.baseUrl}/delete/${id}`, { responseType: 'text' });
+}
 }

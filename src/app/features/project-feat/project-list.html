@@ -1,13 +1,18 @@
 <div class="page-container">
 
   <div class="page-header">
-    <h2>Projets</h2>
+    <div class="toast" *ngIf="notification" [ngClass]="'toast-' + notification.type">
+  <span class="toast-icon">{{ notification.type === 'success' ? '✓' : '✕' }}</span>
+  <span class="toast-message">{{ notification.message }}</span>
+  <button type="button" class="toast-close" (click)="closeNotification()" aria-label="Close">×</button>
+</div>
+    <h2>Projects</h2>
     <button type="button" class="btn-primary" (click)="openModal()">
-      + Créer un projet
+      + Create a project
     </button>
   </div>
 
-  <div *ngIf="loading" class="state-message">Chargement des projets...</div>
+  <div *ngIf="loading" class="state-message">Loading projects...</div>
   <div *ngIf="errorMessage" class="state-message error">{{ errorMessage }}</div>
 
   <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
@@ -23,7 +28,7 @@
           </div>
         </div>
 
-        <p class="card-description">{{ project.description || 'Aucune description' }}</p>
+        <p class="card-description">{{ project.description || 'No description' }}</p>
 
         <div class="card-meta">
           <span class="meta-item">
@@ -31,25 +36,25 @@
             <span class="meta-value">{{ project.owner }}</span>
           </span>
           <span class="meta-item">
-            <span class="meta-label">Créé le</span>
+            <span class="meta-label">Created on</span>
             <span class="meta-value">{{ project.createdAt | date:'dd/MM/yyyy' }}</span>
           </span>
         </div>
-
-        <div class="card-actions">
-          <button
-            type="button"
-            class="btn-secondary btn-import"
-            (click)="goToImportRepo(project)">
-            Importer un repo
-          </button>
-        </div>
+<div class="card-actions">
+  <button type="button" class="btn-secondary btn-import" (click)="goToImportRepo(project)">
+    Import a repo
+  </button>
+  <button type="button" class="btn-danger btn-delete" [disabled]="deletingId === project.id"
+    (click)="deleteProject(project)">
+    {{ deletingId === project.id ? 'Deleting...' : 'Delete' }}
+  </button>
+</div>
 
       </div>
     </div>
 
     <div class="empty-state" *ngIf="projects.length === 0">
-      Aucun projet pour le moment. Cliquez sur "Créer un projet" pour commencer.
+      No projects yet. Click "Create a project" to get started.
     </div>
   </div>
 
@@ -58,31 +63,31 @@
   <div class="modal-box" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h3>Créer un projet</h3>
-      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Fermer">×</button>
+      <h3>Create a project</h3>
+      <button type="button" class="btn-close" (click)="closeModal()" aria-label="Close">×</button>
     </div>
 
     <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="modal-body">
 
       <div class="form-group">
-        <label for="name">Nom du projet</label>
-        <input id="name" type="text" formControlName="name" placeholder="Ex: Mon super projet" />
+        <label for="name">Project name</label>
+        <input id="name" type="text" formControlName="name" placeholder="E.g. My awesome project" />
         <div class="field-error" *ngIf="name?.invalid && name?.touched">
-          <span *ngIf="name?.errors?.['required']">Le nom est requis.</span>
-          <span *ngIf="name?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères.</span>
+          <span *ngIf="name?.errors?.['required']">Name is required.</span>
+          <span *ngIf="name?.errors?.['minlength']">Name must be at least 2 characters long.</span>
         </div>
       </div>
 
       <div class="form-group">
         <label for="description">Description</label>
-        <textarea id="description" formControlName="description" placeholder="Description du projet (optionnel)"></textarea>
+        <textarea id="description" formControlName="description" placeholder="Project description (optional)"></textarea>
         <div class="field-error" *ngIf="description?.invalid && description?.touched">
-          <span *ngIf="description?.errors?.['maxlength']">1000 caractères maximum.</span>
+          <span *ngIf="description?.errors?.['maxlength']">1000 characters maximum.</span>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="status">Statut</label>
+        <label for="status">Status</label>
         <select id="status" formControlName="status">
           <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
         </select>
@@ -91,12 +96,12 @@
       <div class="form-group">
         <label>Owner</label>
         <div class="owner-display">
-          <span *ngIf="loadingOwner">Récupération de l'utilisateur...</span>
+          <span *ngIf="loadingOwner">Fetching user...</span>
           <span *ngIf="!loadingOwner && projectForm.get('owner')?.value">
             {{ projectForm.get('owner')?.value }}
           </span>
           <span *ngIf="!loadingOwner && !projectForm.get('owner')?.value" class="cell-muted">
-            Non déterminé
+            Not determined
           </span>
         </div>
         <div class="field-error" *ngIf="ownerErrorMessage">{{ ownerErrorMessage }}</div>
@@ -105,9 +110,9 @@
       <div class="form-error-banner" *ngIf="formErrorMessage">{{ formErrorMessage }}</div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" (click)="closeModal()">Annuler</button>
+        <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
         <button type="submit" class="btn-primary" [disabled]="submitting || loadingOwner">
-          {{ submitting ? 'Création...' : 'Créer le projet' }}
+          {{ submitting ? 'Creating...' : 'Create project' }}
         </button>
       </div>
 

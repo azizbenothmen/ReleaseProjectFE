@@ -76,7 +76,6 @@
   transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
 }
 
-/* Cette règle manquait — c'est elle qui contrôle la taille des icônes */
 .nav-btn svg {
   width: 18px;
   height: 18px;

@@ -4,7 +4,7 @@
     <h2>Import Git Repository</h2>
 
     <div class="form-group">
-      <label>Rechercher</label>
+      <label>Search</label>
       <input
         type="text"
         placeholder="Search repositories..."
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <div *ngIf="loading" class="loading">Chargement des repositories...</div>
+    <div *ngIf="loading" class="loading">Loading repositories...</div>
 
     <div class="repo-list" *ngIf="!loading">
       <div class="repo-row" *ngFor="let repo of pagedRepos">
@@ -28,7 +28,7 @@
       </div>
 
       <div *ngIf="filteredRepos.length === 0" class="empty-state">
-        Aucun repository trouvé.
+        No repository found.
       </div>
     </div>
 
@@ -62,7 +62,7 @@
   <div class="tag-form-container repo-container">
     <h2>Repos</h2>
 
-    <div *ngIf="loadingImported" class="loading">Chargement...</div>
+    <div *ngIf="loadingImported" class="loading">Loading...</div>
 
     <div class="repo-list" *ngIf="!loadingImported && importedRepos.length > 0; else emptyImported">
       <div class="repo-row" *ngFor="let repo of pagedImportedRepos">
@@ -72,7 +72,7 @@
         </div>
 
         <button type="button" (click)="goToTag(repo)">
-          Tagger
+          Tag
         </button>
       </div>
     </div>

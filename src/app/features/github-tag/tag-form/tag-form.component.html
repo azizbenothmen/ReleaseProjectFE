@@ -11,22 +11,22 @@
     <div class="form-group">
       <label for="repo">Repository</label>
       <input id="repo" type="text" formControlName="repo" readonly/>
-      <small *ngIf="loadingBranches">Chargement des branches...</small>
+      <small *ngIf="loadingBranches">Loading branches...</small>
     </div>
 
     <div class="form-group">
       <label for="branch">Branch</label>
       <select id="branch" formControlName="branch" [disabled]="loadingBranches || branches.length === 0">
-        <option value="" disabled selected>-- Choisir une branche --</option>
+        <option value="" disabled selected>-- Choose a branch --</option>
         <option *ngFor="let b of branches" [value]="b.name">{{ b.name }}</option>
       </select>
-      <small *ngIf="loadingCommits">Chargement des commits...</small>
+      <small *ngIf="loadingCommits">Loading commits...</small>
     </div>
 
     <div class="form-group">
       <label for="commit">Commit (SHA)</label>
       <select id="commit" formControlName="commit" [disabled]="loadingCommits || commits.length === 0">
-        <option value="" disabled selected>-- Choisir un commit --</option>
+        <option value="" disabled selected>-- Choose a commit --</option>
         <option *ngFor="let c of commits" [value]="c.sha">
           {{ c.sha.substring(0, 7) }} — {{ truncateMessage(c.commit.message) }}
         </option>

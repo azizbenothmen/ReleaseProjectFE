@@ -162,7 +162,35 @@
 }
 
 .card-actions {
-  margin-top: 4px;
+  display: flex;
+  gap: 8px;
+}
+
+.card-actions .btn-import {
+  flex: 1;
+}
+
+.btn-danger {
+  padding: 8px 16px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  background: #ffffff;
+  color: #dc2626;
+  font-weight: 700;
+  border: 1px solid #fecaca;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .card-actions .btn-import {
@@ -470,5 +498,78 @@
 @media (max-width: 480px) {
   .modal-box {
     max-width: 100%;
+  }
+}
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.25);
+  min-width: 260px;
+  max-width: 380px;
+  animation: toastSlideIn 0.25s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+.toast-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.toast-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  padding: 0 2px;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .toast {
+    left: 16px;
+    right: 16px;
+    top: 16px;
+    max-width: none;
   }
 }

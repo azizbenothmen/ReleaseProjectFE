@@ -21,6 +21,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   isModalOpen = false;
   submitting = false;
   formErrorMessage: string | null = null;
+  deletingId: number | string | null = null;
+
+  // Notification toast
+  notification: { type: 'success' | 'error'; message: string } | null = null;
+  private notificationTimeout: any;
 
   loadingOwner = false;
   ownerErrorMessage: string | null = null;
@@ -49,8 +54,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Sécurité : on remet le scroll si le composant est détruit avec le modal ouvert
     document.body.style.overflow = '';
+    if (this.notificationTimeout) {
+      clearTimeout(this.notificationTimeout);
+    }
   }
 
   fetchProjects(): void {
@@ -64,7 +71,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.errorMessage = 'Impossible de charger les projets.';
+        this.errorMessage = 'Unable to load projects.';
         this.loading = false;
         this.cdr.detectChanges();
       }
@@ -90,8 +97,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  // Empêche la fermeture quand on clique DANS le modal (utilisé avec (click)="$event.stopPropagation()" côté template,
-  // mais gardé ici si besoin de logique additionnelle plus tard)
   onOverlayClick(): void {
     this.closeModal();
   }
@@ -107,7 +112,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.ownerErrorMessage = "Impossible de récupérer l'utilisateur courant.";
+        this.ownerErrorMessage = "Unable to fetch the current user.";
         this.loadingOwner = false;
         this.cdr.detectChanges();
       }
@@ -117,13 +122,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.projectForm.invalid) {
       this.projectForm.markAllAsTouched();
-      this.formErrorMessage = 'Veuillez corriger les champs invalides.';
+      this.formErrorMessage = 'Please correct the invalid fields.';
       return;
     }
 
     const owner = this.projectForm.get('owner')?.value;
     if (!owner) {
-      this.formErrorMessage = "L'owner n'a pas pu être déterminé. Réessayez.";
+      this.formErrorMessage = "The owner could not be determined. Please try again.";
       return;
     }
 
@@ -147,13 +152,51 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Navigue vers la page d'import de repo en passant l'id du projet
-   * en paramètre de route. La page cible le récupère via ActivatedRoute
-   * et l'utilise pour appeler l'endpoint d'import (ex: POST /projects/{id}/import-repo)
-   */
   goToImportRepo(project: Project): void {
-    this.router.navigate(['/repo', project.id]);
+    this.router.navigate(['projet/repo', project.id]);
+  }
+
+  deleteProject(project: Project): void {
+    if (project.id == null) {
+      this.showNotification('error', 'Invalid project (missing identifier).');
+      return;
+    }
+
+    this.deletingId = project.id;
+
+    this.projectService.deleteProject(project.id).subscribe({
+      next: () => {
+        this.projects = this.projects.filter(p => p.id !== project.id);
+        this.deletingId = null;
+        this.showNotification('success', 'Project deleted successfully.');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.deletingId = null;
+        this.showNotification('error', 'Unable to delete the project.');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  showNotification(type: 'success' | 'error', message: string): void {
+    this.notification = { type, message };
+    this.cdr.detectChanges();
+
+    if (this.notificationTimeout) {
+      clearTimeout(this.notificationTimeout);
+    }
+    this.notificationTimeout = setTimeout(() => {
+      this.notification = null;
+      this.cdr.detectChanges();
+    }, 4000);
+  }
+
+  closeNotification(): void {
+    this.notification = null;
+    if (this.notificationTimeout) {
+      clearTimeout(this.notificationTimeout);
+    }
   }
 
   get name() { return this.projectForm.get('name'); }
@@ -167,6 +210,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     if (typeof err.error === 'string') {
       return err.error;
     }
-    return err.message || 'Une erreur est survenue lors de la création du projet.';
+    return err.message || 'An error occurred while creating the project.';
   }
 }
