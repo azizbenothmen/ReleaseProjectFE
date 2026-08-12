@@ -7,6 +7,7 @@ import { LayoutComponent } from '../app/core/Layout/layout.component';
 import { authGuard } from './core/guards/auth.guard';
 import { ProjectListComponent } from './features/project-feat/project-list.component';
 import { noAuthGuard } from './core/guards/noauth.guard';
+import { ProjectDetailComponent } from './features/project-info/project.info';
 
 export const routes: Routes = [
   {
@@ -22,7 +23,8 @@ export const routes: Routes = [
       { path: '', component: TagFormComponent },
       { path: 'projet/repo/:id', component: RepoListComponent },
       { path: 'home', component: HomeComponent },
-      { path: 'projet', component: ProjectListComponent },
+      { path: 'projects', component: ProjectListComponent },
+      {path:'project/:id',component:ProjectDetailComponent}
     ],
   },
 ];
