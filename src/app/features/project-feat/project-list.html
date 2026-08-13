@@ -17,7 +17,11 @@
 
   <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
     <div class="cards-grid" *ngIf="projects.length > 0">
-      <div class="project-card" *ngFor="let project of projects">
+      <div class="project-card" *ngFor="let project of projects"
+           (click)="goToProjectDetail(project)"
+           role="button"
+           tabindex="0"
+           (keyup.enter)="goToProjectDetail(project)">
 
         <div class="card-header">
           <div class="card-title-group">
@@ -41,11 +45,12 @@
           </span>
         </div>
 <div class="card-actions">
-  <button type="button" class="btn-secondary btn-import" (click)="goToImportRepo(project)">
+  <button type="button" class="btn-secondary btn-import"
+    (click)="$event.stopPropagation(); goToImportRepo(project)">
     Import a repo
   </button>
   <button type="button" class="btn-danger btn-delete" [disabled]="deletingId === project.id"
-    (click)="deleteProject(project)">
+    (click)="$event.stopPropagation(); deleteProject(project)">
     {{ deletingId === project.id ? 'Deleting...' : 'Delete' }}
   </button>
 </div>

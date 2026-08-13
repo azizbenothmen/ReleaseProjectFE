@@ -153,7 +153,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   goToImportRepo(project: Project): void {
-    this.router.navigate(['projet/repo', project.id]);
+    this.router.navigate(['projet', project.id,'repo']);
   }
 
   deleteProject(project: Project): void {
@@ -212,4 +212,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
     return err.message || 'An error occurred while creating the project.';
   }
+  goToProjectDetail(project: Project): void {
+    if (project.id == null) {
+      return;
+    }
+    this.router.navigate(['/project', project.id]);
+  }
+
+  
 }

@@ -1,0 +1,146 @@
+@if (loading()) {
+  <div class="state-msg">Loading project...</div>
+} @else if (error()) {
+  <div class="state-msg error">{{ error() }}</div>
+} @else if (project(); as p) {
+
+  <div class="back" (click)="goBack()">← Back to Projects</div>
+
+  <div class="header-card">
+    <div class="title-row">
+      <div class="icon">{{ initials() }}</div>
+      <div class="title">
+        <h1>{{ p.name }}</h1>
+        @if (p.description) {
+          <p>{{ p.description }}</p>
+        }
+      </div>
+    </div>
+    <button class="btn-primary" (click)="importRepo()">+ Import Repository</button>
+  </div>
+
+  <div class="meta-card">
+    <div class="meta-item">
+      <span class="label">Status</span>
+      <span class="status-pill" [class.inactive]="p.status !== ProjectStatus.ACTIVE">
+        {{ p.status }}
+      </span>
+    </div>
+
+    <div class="meta-item">
+      <span class="label">Owner</span>
+      <span class="value">{{ p.owner }}</span>
+    </div>
+
+    <div class="meta-item">
+      <span class="label">Created On</span>
+      <span class="value">
+        {{ p.createdAt ? (p.createdAt | date:'dd/MM/yyyy') : '—' }}
+      </span>
+    </div>
+
+    <div class="meta-item">
+      <span class="label">Linked Repositories</span>
+      <span class="value">{{ repoCount() }}</span>
+    </div>
+
+    <div class="meta-item">
+      <span class="label">Tags</span>
+      <span class="value">{{ tagCount() }}</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    @for (tab of tabs; track tab.id) {
+      <div
+        class="tab"
+        [class.active]="activeTab() === tab.id"
+        (click)="setTab(tab.id)">
+        {{ tab.label }}
+      </div>
+    }
+  </div>
+
+  @switch (activeTab()) {
+
+    @case ('overview') {
+      <div class="grid-2">
+        <div class="card">
+          <h3>General Information</h3>
+          <p class="muted">
+            {{ p.description || 'No description available.' }}
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Tags</h3>
+          @for (tag of allTags(); track tag.id) {
+            <span class="tag-chip">
+              <span class="dot"></span>{{ tag.tag }}
+            </span>
+          } @empty {
+            <p class="muted">No tags available for this project.</p>
+          }
+        </div>
+      </div>
+    }
+
+    @case ('repos') {
+      <div class="card">
+        <h3>Imported Repositories</h3>
+        @for (repo of p.repos; track repo.id) {
+          <div class="row">
+            <div>
+              <div class="row-name">{{ repo.name }}</div>
+              <div class="row-sub">{{ repo.full_name || repo.loginOwner }}</div>
+            </div>
+            <span class="badge">{{ repo.tags.length }} tag(s)</span>
+          </div>
+        } @empty {
+          <p class="muted">No repositories have been imported for this project.</p>
+        }
+      </div>
+    }
+
+    @case ('tags') {
+      <div class="card">
+        <h3>Tags — Source Commit</h3>
+        @for (tag of allTags(); track tag.id) {
+          <div class="tag-detail-row">
+            <div class="tag-detail-left">
+              <span class="dot lg"></span>
+              <div>
+                <div class="row-name">{{ tag.tag }}</div>
+                <div class="repo-source">{{ tag.repoName }}</div>
+              </div>
+            </div>
+
+            <div class="tag-detail-meta">
+              <span
+                class="branch-badge"
+                title="{{ tag.commitMessage }}">
+                ✎ {{ tag.commitMessage }}
+              </span>
+
+              <span
+                class="commit-hash"
+                (click)="copyCommit(tag.commitsha)"
+                title="Copy full commit hash">
+                ⎔ {{ tag.commitsha.slice(0, 7) }}
+              </span>
+            </div>
+          </div>
+        } @empty {
+          <p class="muted">No tags available for this project.</p>
+        }
+      </div>
+    }
+
+    @case ('activity') {
+      <div class="card">
+        <h3>Recent Activity</h3>
+        <p class="muted">No activity yet.</p>
+      </div>
+    }
+  }
+}
