@@ -30,7 +30,7 @@ export class ProjectDetailComponent implements OnInit {
     { id: 'overview', label: 'overview' },
     { id: 'repos', label: 'Repos' },
     { id: 'tags', label: 'Tags' },
-    { id: 'activity', label: 'Activité' }
+    { id: 'activity', label: 'Activity' }
   ];
 
   repoCount = computed(() => this.project()?.repos.length ?? 0);
@@ -91,7 +91,7 @@ export class ProjectDetailComponent implements OnInit {
   importRepo(): void {
     const id = this.project()?.id;
     if (id !== undefined) {
-      this.router.navigate(['projet/repo/', id, ]);
+      this.router.navigate(['projet', id,'repo' ]);
     }
   }
 }

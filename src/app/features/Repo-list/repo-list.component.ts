@@ -148,7 +148,7 @@ export class RepoListComponent implements OnInit {
     this.http.get<ImportedRepoDetails>(`http://localhost:8085/importedRepo/${repo.name}`)
       .subscribe({
         next: (data) => {
-          this.router.navigate(['/'], {
+          this.router.navigate(['projet',this.projectId,'repo',repo.id], {
             state: {
               owner: data.loginOwner,
               repo: data.name

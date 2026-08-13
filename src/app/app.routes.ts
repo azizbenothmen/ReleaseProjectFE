@@ -20,11 +20,13 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', component: TagFormComponent },
-      { path: 'projet/repo/:id', component: RepoListComponent },
+      { path: '' ,redirectTo:'/home',pathMatch: 'full'},
+      {path:'projet/:id/repo/:id', component: TagFormComponent},
+      { path: 'projet/:id/repo', component: RepoListComponent },
       { path: 'home', component: HomeComponent },
       { path: 'projects', component: ProjectListComponent },
-      {path:'project/:id',component:ProjectDetailComponent}
+      {path:'project/:id',component:ProjectDetailComponent},
+      {path:'**',redirectTo:'/home'}
     ],
   },
 ];

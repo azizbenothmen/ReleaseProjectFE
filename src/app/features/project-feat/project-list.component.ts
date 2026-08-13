@@ -153,7 +153,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   goToImportRepo(project: Project): void {
-    this.router.navigate(['projet/repo', project.id]);
+    this.router.navigate(['projet', project.id,'repo']);
   }
 
   deleteProject(project: Project): void {
