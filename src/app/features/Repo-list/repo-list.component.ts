@@ -94,7 +94,7 @@ export class RepoListComponent implements OnInit {
     this.loadingImported = true;
     this.importedErrorMessage = null;
 
-    this.http.get<RepoPayload[]>(`http://localhost:8085/repoProject/${this.projectId}`)
+    this.http.get<RepoPayload[]>(`http://localhost:8085/project/${this.projectId}/repo`)
       .subscribe({
         next: (data) => {
           this.importedRepos = data.map(r => this.toRepoDto(r));
@@ -129,7 +129,7 @@ export class RepoListComponent implements OnInit {
 
     const payload: RepoPayload = this.toRepoPayload(repo);
 
-    this.http.post<RepoPayload>(`http://localhost:8085/repoCreation/${this.projectId}`, payload)
+    this.http.post<RepoPayload>(`http://localhost:8085/project/${this.projectId}/repoCreation`, payload)
       .subscribe({
         next: (savedRepo) => {
           this.importedRepos.push(this.toRepoDto(savedRepo));

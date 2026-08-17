@@ -7,7 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { combineLatest, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../core/services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-tag-form',
@@ -23,6 +23,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
   loading = false;
   loadingBranches = false;
   loadingCommits = false;
+  projectId=''
 
   branches: Branch[] = [];
   commits: Commit[] = [];
@@ -34,7 +35,8 @@ export class TagFormComponent implements OnInit, OnDestroy {
     private githubService: GithubService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route:ActivatedRoute
   ) {
     this.tagForm = this.fb.group({
       owner: ['', Validators.required],
@@ -84,6 +86,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+      this.projectId = this.route.snapshot.paramMap.get('projectId')!; 
     this.loadCurrentUser();
     this.loadTagContextFromNavigation();
   }
@@ -205,7 +208,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.githubService.createTag(owner, repo, branch, tagRequest).subscribe({
+    this.githubService.createTag(owner, repo, branch, tagRequest,this.projectId).subscribe({
       next: (response) => {
         this.loading = false;
         this.toastr.success(`Tag "${tagRequest.tag}" créé avec succès !`);
