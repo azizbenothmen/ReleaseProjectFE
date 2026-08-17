@@ -21,7 +21,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '' ,redirectTo:'/home',pathMatch: 'full'},
-      {path:'projet/:id/repo/:id', component: TagFormComponent},
+      {path:'projet/:projectId/repo/:id', component: TagFormComponent},
       { path: 'projet/:id/repo', component: RepoListComponent },
       { path: 'home', component: HomeComponent },
       { path: 'projects', component: ProjectListComponent },
