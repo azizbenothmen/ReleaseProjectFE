@@ -144,25 +144,6 @@ export class RepoListComponent implements OnInit {
       });
   }
 
-  goToTag(repo: RepoDto): void {
-    this.http.get<ImportedRepoDetails>(`http://localhost:8085/importedRepo/${repo.name}`)
-      .subscribe({
-        next: (data) => {
-          this.router.navigate(['projet',this.projectId,'repo',repo.id], {
-            state: {
-              owner: data.loginOwner,
-              repo: data.name
-            }
-          });
-        },
-        error: (err) => {
-          this.importedErrorMessage = this.extractErrorMessage(err);
-          this.cdr.detectChanges();
-        }
-      });
-  }
-
-
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredRepos.length / this.pageSize));
   }
@@ -180,6 +161,9 @@ export class RepoListComponent implements OnInit {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
   }
+  goBack(): void {
+  this.router.navigate(['project', this.projectId]);
+}
 
 
   get totalPagesImported(): number {

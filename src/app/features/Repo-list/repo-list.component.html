@@ -1,5 +1,7 @@
 <div class="page-layout">
 
+  <div class="back-link" (click)="goBack()">← Back to Project</div>
+
   <div class="tag-form-container repo-container">
     <h2>Import Git Repository</h2>
 
@@ -71,9 +73,7 @@
           <span class="repo-owner">· {{ repo.owner?.login }}</span>
         </div>
 
-        <button type="button" (click)="goToTag(repo)">
-          Tag
-        </button>
+        
       </div>
     </div>
 

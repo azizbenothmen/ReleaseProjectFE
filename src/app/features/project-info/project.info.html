@@ -90,9 +90,12 @@
         <h3>Imported Repositories</h3>
         @for (repo of p.repos; track repo.id) {
           <div class="row">
-            <div>
-              <div class="row-name">{{ repo.name }}</div>
-              <div class="row-sub">{{ repo.full_name || repo.loginOwner }}</div>
+            <div class="row-left">
+              <button class="btn-tag" (click)="goToTag(repo)">+ Tag</button>
+              <div>
+                <div class="row-name">{{ repo.name }}</div>
+                <div class="row-sub">{{ repo.full_name || repo.loginOwner }}</div>
+              </div>
             </div>
             <span class="badge">{{ repo.tags.length }} tag(s)</span>
           </div>

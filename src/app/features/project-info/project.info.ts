@@ -7,6 +7,11 @@ import { ProjectStatus } from '../../core/models/project.model';
 
 type TabId = 'overview' | 'repos' | 'tags' | 'activity';
 
+interface ImportedRepoDetails {
+  loginOwner: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-project-detail',
   standalone: true,
@@ -49,6 +54,8 @@ export class ProjectDetailComponent implements OnInit {
     const name = this.project()?.name ?? '';
     return name.slice(0, 2).toUpperCase();
   });
+
+  errorMessage: string | null = null;
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -93,5 +100,34 @@ export class ProjectDetailComponent implements OnInit {
     if (id !== undefined) {
       this.router.navigate(['projet', id,'repo' ]);
     }
+  }
+
+  goToTag(repo: any): void {
+    const projectId = this.project()?.id;
+
+    this.http.get<ImportedRepoDetails>(`http://localhost:8085/importedRepo/${repo.name}`)
+      .subscribe({
+        next: (data) => {
+          this.router.navigate(['projet', projectId, 'repo', repo.id], {
+            state: {
+              owner: data.loginOwner,
+              repo: data.name
+            }
+          });
+        },
+        error: (err) => {
+          this.errorMessage = this.extractErrorMessage(err);
+        }
+      });
+  }
+
+  private extractErrorMessage(err: any): string {
+    if (err.error?.message) {
+      return err.error.message;
+    }
+    if (typeof err.error === 'string') {
+      return err.error;
+    }
+    return err.message || "Impossible de récupérer les informations du repository.";
   }
 }
