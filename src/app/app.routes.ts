@@ -8,6 +8,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { ProjectListComponent } from './features/project-feat/project-list.component';
 import { noAuthGuard } from './core/guards/noauth.guard';
 import { ProjectDetailComponent } from './features/project-info/project.info';
+import { UserProfileComponent } from './features/user-profile/user-profile.component';
 
 export const routes: Routes = [
   {
@@ -21,12 +22,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '' ,redirectTo:'/home',pathMatch: 'full'},
-      {path:'projet/:projectId/repo/:id', component: TagFormComponent},
+      { path: 'projet/:projectId/repo/:id', component: TagFormComponent },
       { path: 'projet/:id/repo', component: RepoListComponent },
       { path: 'home', component: HomeComponent },
       { path: 'projects', component: ProjectListComponent },
-      {path:'project/:id',component:ProjectDetailComponent},
-      {path:'**',redirectTo:'/home'}
+      { path: 'project/:id', component: ProjectDetailComponent },
+      { path: 'profile', component: UserProfileComponent },
+      { path: 'profile/:username', component: UserProfileComponent },
+      { path: '**', redirectTo: '/home' }
     ],
   },
 ];

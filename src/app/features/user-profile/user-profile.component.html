@@ -1,0 +1,140 @@
+@if (notification(); as toast) {
+  <div class="toast" [class.toast-success]="toast.type === 'success'" [class.toast-error]="toast.type === 'error'">
+    <span class="toast-icon">{{ toast.type === 'success' ? '✓' : '✕' }}</span>
+    <span class="toast-message">{{ toast.message }}</span>
+    <button type="button" class="toast-close" (click)="closeToast()" aria-label="Close">×</button>
+  </div>
+}
+
+@if (loading()) {
+  <div class="state-msg">Loading profile...</div>
+} @else if (error()) {
+  <div class="state-msg error">{{ error() }}</div>
+} @else if (profile(); as u) {
+
+  <div class="profile-page-wrapper">
+    <div class="back" (click)="goHome()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Home
+    </div>
+
+    <div class="profile-hero">
+      <div class="hero-avatar">{{ initials() }}</div>
+      <h1 class="hero-name">{{ u.fullName }}</h1>
+      <p class="hero-role">{{ u.role }} at Elyadata GitOps</p>
+
+      <div class="hero-pills-row">
+        <div class="hero-pill">
+          <span class="pill-icon">&#64;</span>
+          <span class="pill-text">{{ u.username }}</span>
+        </div>
+        <div class="hero-pill">
+          <span class="pill-icon">✉</span>
+          <span class="pill-text">{{ u.email }}</span>
+        </div>
+        <div class="hero-pill status-pill-hero" [class.inactive]="u.status !== 'active'">
+          <span class="pill-dot"></span>
+          <span class="pill-text">{{ u.status | uppercase }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="grid-card main-projects-card">
+        <div class="card-header-styled">
+          <h2>Assigned Projects</h2>
+          <div class="accent-line"></div>
+        </div>
+
+        <p class="card-intro muted">GitOps release management projects assigned to {{ u.fullName }}:</p>
+
+        <div class="projects-list-styled">
+          @for (proj of u.projects; track proj.id) {
+            <div class="styled-project-item" (click)="goToProject(proj.id)">
+              <div class="item-left">
+                <div class="project-mini-avatar">{{ proj.name.slice(0, 2).toUpperCase() }}</div>
+                <div class="project-item-details">
+                  <div class="project-title-row">
+                    <span class="project-name-txt">{{ proj.name }}</span>
+                    <span class="project-role-chip" [attr.data-role]="proj.role">{{ proj.role }}</span>
+                  </div>
+                  <p class="project-desc-txt">{{ proj.description || 'Core GitOps release platform project.' }}</p>
+                  <div class="project-meta-inline">
+                    <span>Owner: <strong>{{ proj.owner }}</strong></span>
+                    <span class="meta-separator">•</span>
+                    <span><strong>{{ proj.repoCount }}</strong> Linked Repos</span>
+                    <span class="meta-separator">•</span>
+                    <span>Activity: {{ proj.lastActivityDate | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item-right">
+                <button type="button" class="btn-goto-project" (click)="$event.stopPropagation(); goToProject(proj.id)">
+                  View →
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="empty-state-box">
+              <p class="muted">No projects assigned to this profile yet.</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="right-stacked-col">
+        <div class="grid-card info-card">
+          <div class="card-header-styled">
+            <h2>User Information</h2>
+            <div class="accent-line"></div>
+          </div>
+
+          <div class="info-list-styled">
+            <div class="info-item-row">
+              <span class="item-label">Full Name</span>
+              <span class="item-val font-bold">{{ u.fullName }}</span>
+            </div>
+            <div class="info-item-row">
+              <span class="item-label">Username</span>
+              <span class="item-val font-cyan">&#64;{{ u.username }}</span>
+            </div>
+            <div class="info-item-row">
+              <span class="item-label">Email Address</span>
+              <span class="item-val">{{ u.email }}</span>
+            </div>
+            <div class="info-item-row">
+              <span class="item-label">Platform Role</span>
+              <span class="item-val role-badge-txt" [attr.data-role]="u.role">{{ u.role }}</span>
+            </div>
+            <div class="info-item-row">
+              <span class="item-label">Account Status</span>
+              <span class="item-val text-green font-bold">{{ u.status | uppercase }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-card summary-card">
+          <div class="card-header-styled">
+            <h2>GitOps Overview</h2>
+            <div class="accent-line"></div>
+          </div>
+
+          <div class="summary-metrics-row">
+            <div class="metric-box">
+              <span class="metric-num">{{ projectCount() }}</span>
+              <span class="metric-lbl">Assigned Projects</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-num">{{ connectedScmCount() }}</span>
+              <span class="metric-lbl">SCM Accounts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+}
