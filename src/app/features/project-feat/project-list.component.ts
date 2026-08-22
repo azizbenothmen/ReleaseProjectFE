@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProjectService } from '../../core/services/project.service';
 import { Project, ProjectStatus } from '../../core/models/project.model';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-project-list',
@@ -20,6 +21,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   isModalOpen = false;
   submitting = false;
+  owner:string='';
   formErrorMessage: string | null = null;
   deletingId: number | string | null = null;
 
@@ -61,22 +63,27 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   fetchProjects(): void {
-    this.loading = true;
-    this.errorMessage = null;
+  this.loading = true;
+  this.errorMessage = null;
 
-    this.projectService.getProjects().subscribe({
-      next: (data) => {
-        this.projects = data;
-        this.loading = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.errorMessage = 'Unable to load projects.';
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
-  }
+  this.projectService.getCurrentUser().pipe(
+    switchMap((user) => {
+      this.owner = user.username;
+      return this.projectService.getProjects(this.owner);
+    })
+  ).subscribe({
+    next: (data) => {
+      this.projects = data;
+      this.loading = false;
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.errorMessage = 'Unable to load projects.';
+      this.loading = false;
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   openModal(): void {
     this.isModalOpen = true;
