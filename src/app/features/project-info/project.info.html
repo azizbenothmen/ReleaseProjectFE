@@ -1,11 +1,25 @@
+@if (notification(); as toast) {
+  <div class="toast" [class.toast-success]="toast.type === 'success'" [class.toast-error]="toast.type === 'error'">
+    <span class="toast-icon">{{ toast.type === 'success' ? '✓' : '✕' }}</span>
+    <span class="toast-message">{{ toast.message }}</span>
+    <button type="button" class="toast-close" (click)="closeToast()" aria-label="Close">×</button>
+  </div>
+}
+
 @if (loading()) {
-  <div class="state-msg">Loading project...</div>
+  <div class="state-msg">Loading project profile...</div>
 } @else if (error()) {
   <div class="state-msg error">{{ error() }}</div>
 } @else if (project(); as p) {
 
-  <div class="back" (click)="goBack()">← Back to Projects</div>
+  <div class="back" (click)="goBack()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 19l-7-7 7-7"/>
+    </svg>
+    Back to Projects
+  </div>
 
+  <!-- Header Card with card-grid thumbnail style consistent with ProjectListComponent -->
   <div class="header-card">
     <div class="title-row">
       <div class="icon">{{ initials() }}</div>
@@ -13,12 +27,23 @@
         <h1>{{ p.name }}</h1>
         @if (p.description) {
           <p>{{ p.description }}</p>
+        } @else {
+          <p class="no-desc">No description provided for this GitOps project.</p>
         }
       </div>
     </div>
-    <button class="btn-primary" (click)="importRepo()">+ Import Repository</button>
+    <div class="header-actions">
+      <button type="button" class="btn-primary" (click)="importRepo()">+ Import Repository</button>
+      <button type="button" class="btn-danger" (click)="openDeleteModal()" title="Delete project">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+        Delete Project
+      </button>
+    </div>
   </div>
 
+  <!-- Meta Card -->
   <div class="meta-card">
     <div class="meta-item">
       <span class="label">Status</span>
@@ -28,14 +53,22 @@
     </div>
 
     <div class="meta-item">
-      <span class="label">Owner</span>
-      <span class="value">{{ p.owner }}</span>
+      <span class="label">Owner / Team</span>
+      <span class="value">{{ p.owner }}{{ p.team ? ' (' + p.team + ')' : '' }}</span>
     </div>
 
     <div class="meta-item">
       <span class="label">Created On</span>
       <span class="value">
         {{ p.createdAt ? (p.createdAt | date:'dd/MM/yyyy') : '—' }}
+      </span>
+    </div>
+
+    <div class="meta-item">
+      <span class="label">SCM Provider</span>
+      <span class="scm-badge" [attr.data-provider]="detectScmProvider()">
+        <span class="scm-dot"></span>
+        {{ detectScmProvider() }}
       </span>
     </div>
 
@@ -50,6 +83,7 @@
     </div>
   </div>
 
+  <!-- Tabs Navigation -->
   <div class="tabs">
     @for (tab of tabs; track tab.id) {
       <div
@@ -57,93 +91,239 @@
         [class.active]="activeTab() === tab.id"
         (click)="setTab(tab.id)">
         {{ tab.label }}
+        @if (tab.id === 'repos') { <span class="tab-count-badge">{{ repoCount() }}</span> }
+        @if (tab.id === 'tags') { <span class="tab-count-badge">{{ tagCount() }}</span> }
       </div>
     }
   </div>
 
+  <!-- Tab Contents -->
   @switch (activeTab()) {
 
     @case ('overview') {
       <div class="grid-2">
         <div class="card">
-          <h3>General Information</h3>
-          <p class="muted">
-            {{ p.description || 'No description available.' }}
-          </p>
+          <h3>Project Overview</h3>
+          <div class="overview-grid">
+            <div class="overview-item">
+              <span class="overview-label">Project Name</span>
+              <span class="overview-val font-bold">{{ p.name }}</span>
+            </div>
+
+            <div class="overview-item">
+              <span class="overview-label">Owner / Team</span>
+              <span class="overview-val">{{ p.owner }}{{ p.team ? ' • ' + p.team : '' }}</span>
+            </div>
+
+            <div class="overview-item">
+              <span class="overview-label">Status Indicator</span>
+              <div>
+                <span class="status-pill" [class.inactive]="p.status !== ProjectStatus.ACTIVE">
+                  {{ p.status }}
+                </span>
+              </div>
+            </div>
+
+            <div class="overview-item">
+              <span class="overview-label">SCM Provider</span>
+              <div>
+                <span class="scm-badge" [attr.data-provider]="detectScmProvider()">
+                  <span class="scm-dot"></span>
+                  {{ detectScmProvider() }}
+                </span>
+              </div>
+            </div>
+
+            <div class="overview-item">
+              <span class="overview-label">Creation Date</span>
+              <span class="overview-val">{{ p.createdAt ? (p.createdAt | date:'longDate') : '—' }}</span>
+            </div>
+          </div>
+
+          <div class="description-box">
+            <span class="overview-label">Description</span>
+            <p class="muted">
+              {{ p.description || 'No description available for this project.' }}
+            </p>
+          </div>
         </div>
 
         <div class="card">
-          <h3>Tags</h3>
-          @for (tag of allTags(); track tag.id) {
-            <span class="tag-chip">
-              <span class="dot"></span>{{ tag.tag }}
-            </span>
-          } @empty {
-            <p class="muted">No tags available for this project.</p>
-          }
+          <h3>GitOps & Release Metrics</h3>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-number">{{ repoCount() }}</div>
+              <div class="stat-label">Linked Repositories</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">{{ tagCount() }}</div>
+              <div class="stat-label">Total Release Tags</div>
+            </div>
+          </div>
+
+          <div class="recent-tags-header">
+            <span class="overview-label">Recent Release Tags</span>
+          </div>
+          <div class="tags-cloud">
+            @for (tag of allTags().slice(0, 10); track tag.id) {
+              <span class="tag-chip">
+                <span class="dot"></span>
+                <strong>{{ tag.tag }}</strong>
+                <span class="chip-repo">({{ tag.repoName }})</span>
+              </span>
+            } @empty {
+              <p class="muted">No tags available for this project.</p>
+            }
+          </div>
         </div>
       </div>
     }
 
     @case ('repos') {
       <div class="card">
-        <h3>Imported Repositories</h3>
+        <div class="card-title-bar">
+          <h3>Linked Repositories</h3>
+          <button type="button" class="btn-primary-sm" (click)="importRepo()">+ Import Repository</button>
+        </div>
+
         @for (repo of p.repos; track repo.id) {
-          <div class="row">
+          <div class="row repo-row">
             <div class="row-left">
-              <button class="btn-tag" (click)="goToTag(repo)">+ Tag</button>
-              <div>
-                <div class="row-name">{{ repo.name }}</div>
-                <div class="row-sub">{{ repo.full_name || repo.loginOwner }}</div>
+              <button type="button" class="btn-tag" (click)="goToTag(repo)">+ Tag</button>
+              <div class="repo-info-block">
+                <div class="row-name flex-center">
+                  {{ repo.name }}
+                  <span class="scm-badge-sm" [attr.data-provider]="detectScmProvider(repo)">
+                    {{ detectScmProvider(repo) }}
+                  </span>
+                </div>
+                <div class="row-sub">{{ repo.full_name || (repo.loginOwner + '/' + repo.name) }}</div>
+                <div class="repo-meta-details">
+                  <span class="meta-detail-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/>
+                      <circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+                    </svg>
+                    Default Branch: <strong>{{ repo.defaultBranch || 'main' }}</strong>
+                  </span>
+                  <span class="meta-detail-bullet">•</span>
+                  <span class="meta-detail-item">
+                    Last Sync: <strong>{{ repo.lastSyncDate ? (repo.lastSyncDate | date:'dd/MM/yyyy') : 'Today' }}</strong>
+                  </span>
+                </div>
               </div>
             </div>
-            <span class="badge">{{ repo.tags.length }} tag(s)</span>
+
+            <div class="repo-right-actions">
+              <a [href]="getRepoUrl(repo)" target="_blank" rel="noopener noreferrer" class="scm-link-out" title="Open repository in SCM provider">
+                View on {{ detectScmProvider(repo) }}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/>
+                  <line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </a>
+              <span class="badge">{{ repo.tags ? repo.tags.length : 0 }} tag(s)</span>
+            </div>
           </div>
         } @empty {
-          <p class="muted">No repositories have been imported for this project.</p>
+          <div class="empty-state-box">
+            <p class="muted">No repositories have been imported for this project yet.</p>
+            <button type="button" class="btn-primary" (click)="importRepo()">+ Import Repository</button>
+          </div>
         }
       </div>
     }
 
     @case ('tags') {
       <div class="card">
-        <h3>Tags — Source Commit</h3>
+        <div class="card-title-bar">
+          <h3>Release Tags — Chronological History</h3>
+          <span class="total-tag-count">{{ tagCount() }} tags total</span>
+        </div>
+
         @for (tag of allTags(); track tag.id) {
           <div class="tag-detail-row">
             <div class="tag-detail-left">
               <span class="dot lg"></span>
               <div>
-                <div class="row-name">{{ tag.tag }}</div>
-                <div class="repo-source">{{ tag.repoName }}</div>
+                <div class="row-name flex-center gap-8">
+                  {{ tag.tag }}
+                  <span class="tagger-pill" title="Tagger">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    {{ tag.displayTagger }}
+                  </span>
+                </div>
+                <div class="repo-source">
+                  Repo: <strong>{{ tag.repoName }}</strong> • Cut on {{ tag.displayDate | date:'dd/MM/yyyy HH:mm' }}
+                </div>
               </div>
             </div>
 
             <div class="tag-detail-meta">
               <span
                 class="branch-badge"
-                title="{{ tag.commitMessage }}">
-                ✎ {{ tag.commitMessage }}
+                title="Branch cut from">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>
+                </svg>
+                {{ tag.displayBranch }}
               </span>
+
+              @if (tag.commitMessage) {
+                <span class="commit-msg-pill" title="{{ tag.commitMessage }}">
+                  ✎ {{ tag.commitMessage }}
+                </span>
+              }
 
               <span
                 class="commit-hash"
+                [class.copied]="copiedSha() === tag.commitsha"
                 (click)="copyCommit(tag.commitsha)"
-                title="Copy full commit hash">
-                ⎔ {{ tag.commitsha.slice(0, 7) }}
+                title="Click to copy commit SHA">
+                ⎔ {{ tag.commitsha ? tag.commitsha.slice(0, 7) : 'head' }}
+                <span class="copy-hint">{{ copiedSha() === tag.commitsha ? '✓ Copied' : '' }}</span>
               </span>
             </div>
           </div>
         } @empty {
-          <p class="muted">No tags available for this project.</p>
+          <div class="empty-state-box">
+            <p class="muted">No release tags available for this project.</p>
+          </div>
         }
       </div>
     }
 
     @case ('activity') {
       <div class="card">
-        <h3>Recent Activity</h3>
-        <p class="muted">No activity yet.</p>
+        <h3>Recent Activity Log</h3>
+        <p class="muted">No recent activity logged for this project yet.</p>
       </div>
     }
   }
+
+  <!-- Delete Project Confirmation Modal -->
+  @if (showDeleteModal()) {
+    <div class="modal-overlay" (click)="closeDeleteModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Delete Project</h3>
+          <button type="button" class="btn-close" (click)="closeDeleteModal()" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete project <strong>"{{ p.name }}"</strong>?</p>
+          <p class="warning-text">This action is permanent and will remove the project along with its repository links.</p>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+          <button type="button" class="btn-danger-solid" [disabled]="deleting()" (click)="confirmDelete()">
+            {{ deleting() ? 'Deleting...' : 'Yes, Delete Project' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
 }

@@ -75,12 +75,24 @@
     color: #64748B;
     font-size: 14px;
   }
+
+  .no-desc {
+    font-style: italic;
+    color: #94A3B8;
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .meta-card {
   display: flex;
   gap: 28px;
   padding: 18px 32px;
+  flex-wrap: wrap;
 }
 
 .meta-item {
@@ -126,10 +138,85 @@
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
+  transition: all 0.15s ease;
 
   &:hover {
     background: #08BAEF;
     color: #051C3F;
+  }
+}
+
+.btn-primary-sm {
+  background: #051C3F;
+  color: #FFFFFF;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #08BAEF;
+    color: #051C3F;
+  }
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFF1F2;
+  color: #E11D48;
+  border: 1px solid #FECDD3;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #E11D48;
+    color: #FFFFFF;
+    border-color: #E11D48;
+  }
+}
+
+.btn-danger-solid {
+  background: #E11D48;
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #BE123C;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #E2E8F0;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: #E2E8F0;
   }
 }
 
@@ -148,6 +235,9 @@
   cursor: pointer;
   border-bottom: 2px solid transparent;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &.active {
     color: #08BAEF;
@@ -156,6 +246,20 @@
 
   &:hover:not(.active) {
     color: #051C3F;
+  }
+}
+
+.tab-count-badge {
+  font-size: 11px;
+  background: #F1F5F9;
+  color: #475569;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-weight: 700;
+
+  .active & {
+    background: #E0F2FE;
+    color: #0284C7;
   }
 }
 
@@ -180,6 +284,17 @@
   }
 }
 
+.card-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+  }
+}
+
 .muted {
   color: #64748B;
   font-size: 14px;
@@ -198,6 +313,12 @@
   font-weight: 600;
   margin: 4px 6px 4px 0;
   color: #051C3F;
+
+  .chip-repo {
+    font-size: 11px;
+    color: #64748B;
+    font-weight: 500;
+  }
 }
 
 .dot {
@@ -260,6 +381,7 @@
 
 .tag-detail-meta {
   display: flex;
+  align-items: center;
   gap: 14px;
 }
 
@@ -284,13 +406,25 @@
   font-weight: 600;
   color: #64748B;
   background: #F3F4F6;
-  padding: 3px 9px;
+  padding: 4px 10px;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.15s ease;
 
   &:hover {
     color: #051C3F;
     background: #E5E7EB;
+  }
+
+  &.copied {
+    background: #DCFCE7;
+    color: #15803D;
+  }
+
+  .copy-hint {
+    font-size: 10px;
+    color: #16A34A;
+    font-weight: 700;
   }
 }
 
@@ -303,11 +437,13 @@ h5,
 h6 {
   color: #051C3F !important;
 }
+
 .row-left {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .btn-tag {
   display: inline-flex;
   align-items: center;
@@ -338,4 +474,370 @@ h6 {
 .btn-tag:focus-visible {
   outline: 2px solid #6366f1;
   outline-offset: 2px;
+}
+
+/* Custom SCM Badges */
+.scm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #F8FAFC;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
+
+  .scm-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #08BAEF;
+  }
+
+  &[data-provider="GitLab"] .scm-dot {
+    background: #FC6D26;
+  }
+
+  &[data-provider="Bitbucket"] .scm-dot {
+    background: #0052CC;
+  }
+
+  &[data-provider="Azure DevOps"] .scm-dot {
+    background: #0078D4;
+  }
+}
+
+.scm-badge-sm {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #F1F5F9;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* SCM Link Out */
+.scm-link-out {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #08BAEF;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: #F0F9FF;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #08BAEF;
+    color: #FFFFFF;
+  }
+}
+
+/* Overview tab details */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.overview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overview-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.overview-val {
+  font-size: 14px;
+  color: #051C3F;
+  font-weight: 500;
+
+  &.font-bold {
+    font-weight: 700;
+  }
+}
+
+.description-box {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #E5E9F0;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: #051C3F;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.recent-tags-header {
+  margin-bottom: 10px;
+}
+
+.tags-cloud {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Repositories Tab extra styles */
+.repo-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.repo-meta-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748B;
+}
+
+.meta-detail-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-detail-bullet {
+  color: #CBD5E1;
+}
+
+.repo-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.empty-state-box {
+  padding: 40px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Tag details extra styles */
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.tagger-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #F1F5F9;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.commit-msg-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  color: #475569;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  padding: 3px 9px;
+  border-radius: 6px;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.total-tag-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #051C3F;
+  color: #FFFFFF;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  font-size: 13px;
+  font-weight: 600;
+  animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-success {
+  background: #051C3F;
+  border-left: 4px solid #10B981;
+}
+
+.toast-error {
+  background: #051C3F;
+  border-left: 4px solid #D6037F;
+}
+
+.toast-icon {
+  font-size: 14px;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #94A3B8;
+  font-size: 16px;
+  cursor: pointer;
+
+  &:hover {
+    color: #FFFFFF;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Dialog */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 28, 63, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  background: #FFFFFF;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  padding: 24px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: popIn 0.2s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+  }
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #64748B;
+  cursor: pointer;
+
+  &:hover {
+    color: #051C3F;
+  }
+}
+
+.modal-body {
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #334155;
+
+  p {
+    margin: 0 0 8px;
+  }
+
+  .warning-text {
+    font-size: 12px;
+    color: #E11D48;
+    background: #FFF1F2;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #FECDD3;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
