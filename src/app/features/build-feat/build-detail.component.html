@@ -1,0 +1,86 @@
+<div class="page-container">
+  <!-- Back Button & Breadcrumb -->
+  <div class="nav-top">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="back-icon">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      Retour à la liste des builds
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-container loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des détails du build...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !loading" class="state-container error-state">
+    <div class="error-icon">✕</div>
+    <h3>Erreur</h3>
+    <p>{{ errorMessage }}</p>
+    <button type="button" class="btn-primary" (click)="fetchBuildDetails(owner, buildId)">Réessayer</button>
+  </div>
+
+  <!-- Build Detail Content -->
+  <div class="detail-card" *ngIf="!loading && build">
+    <!-- Header -->
+    <div class="detail-header">
+      <div class="header-left">
+        <h2 class="build-title">{{ build.nameBuild || ('Build #' + build.num) }}</h2>
+        <span class="owner-badge">Owner: @{{ owner }}</span>
+      </div>
+      <span class="badge badge-lg" [ngClass]="getBadgeClass(build.resultat)">
+        <span class="status-dot"></span>
+        {{ build.resultat || 'IN_PROGRESS' }}
+      </span>
+    </div>
+
+    <!-- Metadata Section -->
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="item-label">ID du Build</span>
+        <span class="item-value monospace">{{ build.id }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="item-label">Numéro</span>
+        <span class="item-value monospace">#{{ build.num }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="item-label">Durée d'exécution</span>
+        <span class="item-value cell-strong">{{ formatDuration(build.duration) }}</span>
+      </div>
+
+      <div class="detail-item">
+        <span class="item-label">Date de lancement</span>
+        <span class="item-value">
+          {{ build.time ? (build.time | date:'dd/MM/yyyy HH:mm:ss') : 'Non disponible' }}
+        </span>
+      </div>
+
+      <div class="detail-item" *ngIf="build.project?.name">
+        <span class="item-label">Projet associé</span>
+        <span class="item-value">{{ build.project?.name }}</span>
+      </div>
+
+      <div class="detail-item" *ngIf="build.repo?.name">
+        <span class="item-label">Dépôt associé</span>
+        <span class="item-value">{{ build.repo?.name }}</span>
+      </div>
+    </div>
+
+    <!-- Additional info block if project details exist -->
+    <div class="project-info-block" *ngIf="build.project">
+      <h4>Détails du projet</h4>
+      <p class="project-description">{{ build.project?.description || 'Aucune description fournie.' }}</p>
+      <div class="project-meta">
+        <span>Statut projet: <strong>{{ build.project?.status }}</strong></span>
+        <span *ngIf="build.project?.createdAt">Créé le: {{ build.project?.createdAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

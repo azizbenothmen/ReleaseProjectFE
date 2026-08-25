@@ -1,0 +1,130 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Builds</h2>
+      <p class="page-subtitle" *ngIf="owner">Historique des builds Jenkins de <strong>@{{ owner }}</strong></p>
+    </div>
+    <button type="button" class="btn-secondary" (click)="fetchBuilds(owner)" [disabled]="loading">
+      <svg class="icon-refresh" [class.spinning]="loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+      </svg>
+      Actualiser
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="state-container loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des builds en cours...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !loading" class="state-container error-state">
+    <div class="error-icon">✕</div>
+    <h3>Erreur de chargement</h3>
+    <p>{{ errorMessage }}</p>
+    <button type="button" class="btn-primary" (click)="fetchBuilds(owner)">Réessayer</button>
+  </div>
+
+  <!-- Main Content (Cards Grid & Empty State) -->
+  <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
+    
+    <!-- Grid of Cards -->
+    <div class="cards-grid" *ngIf="builds.length > 0">
+      <div 
+        class="build-card" 
+        *ngFor="let build of builds"
+        (click)="goToBuildDetail(build)"
+        role="button"
+        tabindex="0"
+        (keyup.enter)="goToBuildDetail(build)">
+
+        <!-- Card Top Section -->
+        <div class="card-header">
+          <div class="card-title-group">
+            <h3 class="card-title">{{ build.nameBuild || ('Build #' + build.num) }}</h3>
+            <span class="build-num" *ngIf="build.num">#{{ build.num }}</span>
+          </div>
+          <span class="badge" [ngClass]="getBadgeClass(build.resultat)">
+            <span class="status-dot"></span>
+            {{ build.resultat || 'IN_PROGRESS' }}
+          </span>
+        </div>
+
+        <!-- Card Body Metadata -->
+        <div class="card-body">
+          <div class="info-row">
+            <span class="info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Durée
+            </span>
+            <span class="info-value cell-strong">{{ formatDuration(build.duration) }}</span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Lancement
+            </span>
+            <span class="info-value">
+              {{ build.time ? (build.time | date:'dd/MM/yyyy HH:mm') : 'Non spécifiée' }}
+            </span>
+          </div>
+
+          <!-- Associated Project & Repo -->
+          <div class="card-associations">
+            <div class="assoc-item" *ngIf="build.project?.name">
+              <span class="assoc-tag project-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="assoc-icon">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                Projet: {{ build.project?.name }}
+              </span>
+            </div>
+
+            <div class="assoc-item" *ngIf="build.repo?.name">
+              <span class="assoc-tag repo-tag">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="assoc-icon">
+                  <path d="M15 22v-4a48 48 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/>
+                  <path d="M9 18c-4.51 2-5-2-7-2"/>
+                </svg>
+                Repo: {{ build.repo?.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Footer Link Indicator -->
+        <div class="card-footer">
+          <span class="view-detail-text">Voir le détail du build</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="builds.length === 0">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <h3>Aucun build trouvé</h3>
+      <p>Aucun historique de build Jenkins n'est disponible pour l'owner <strong>@{{ owner }}</strong> pour le moment.</p>
+    </div>
+
+  </div>
+</div>

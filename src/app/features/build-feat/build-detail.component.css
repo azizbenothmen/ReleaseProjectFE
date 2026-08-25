@@ -1,0 +1,255 @@
+.page-container {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 24px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+}
+
+.nav-top {
+  margin-bottom: 24px;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.btn-back:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.back-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* States */
+.state-container {
+  padding: 48px 24px;
+  border-radius: 16px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 32px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #00ADEF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error-state {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.error-state h3 {
+  margin: 12px 0 6px;
+}
+
+.error-icon {
+  width: 44px;
+  height: 44px;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 auto;
+}
+
+/* Detail Card */
+.detail-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.build-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+  color: #0f172a;
+}
+
+.owner-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.badge-lg {
+  font-size: 0.85rem;
+  padding: 8px 18px;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.badge-success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.badge-danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.badge-warning {
+  background: #fffbe6;
+  color: #d97706;
+  border-color: #fde68a;
+}
+
+.badge-gray {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+/* Metadata Grid */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.item-value {
+  font-size: 0.95rem;
+  color: #1e293b;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.monospace {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.cell-strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Project Info Block */
+.project-info-block {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.project-info-block h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.project-description {
+  font-size: 0.9rem;
+  color: #475569;
+  margin: 0 0 12px 0;
+}
+
+.project-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.btn-primary {
+  padding: 10px 24px;
+  background: linear-gradient(90deg, #00ADEF, #E20074);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 173, 239, 0.25);
+  transition: all 0.2s ease;
+}

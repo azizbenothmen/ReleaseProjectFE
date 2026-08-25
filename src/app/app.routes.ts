@@ -10,6 +10,9 @@ import { noAuthGuard } from './core/guards/noauth.guard';
 import { ProjectDetailComponent } from './features/project-info/project.info';
 import { UserProfileComponent } from './features/user-profile/user-profile.component';
 
+import { BuildListComponent } from './features/build-feat/build-list.component';
+import { BuildDetailComponent } from './features/build-feat/build-detail.component';
+
 export const routes: Routes = [
   {
     path: 'login',
@@ -22,6 +25,8 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '' ,redirectTo:'/home',pathMatch: 'full'},
+      { path: 'owner/:owner/builds', component: BuildListComponent },
+      { path: 'owner/:owner/builds/:id', component: BuildDetailComponent },
       { path: 'projet/:projectId/repo/:id', component: TagFormComponent },
       { path: 'projet/:id/repo', component: RepoListComponent },
       { path: 'home', component: HomeComponent },

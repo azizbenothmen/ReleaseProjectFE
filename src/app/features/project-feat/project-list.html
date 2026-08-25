@@ -49,10 +49,6 @@
     (click)="$event.stopPropagation(); goToImportRepo(project)">
     Import a repo
   </button>
-  <button type="button" class="btn-danger btn-delete" [disabled]="deletingId === project.id"
-    (click)="$event.stopPropagation(); deleteProject(project)">
-    {{ deletingId === project.id ? 'Deleting...' : 'Delete' }}
-  </button>
 </div>
 
       </div>

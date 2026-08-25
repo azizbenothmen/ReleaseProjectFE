@@ -12,17 +12,17 @@
 
   <nav class="nav-group">
     <a class="nav-btn"
-  routerLink="/home"
-  routerLinkActive="active">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-    <path d="M3 10.5 12 3l9 7.5"/>
-    <path d="M5 9.5V21h14V9.5"/>
-    <path d="M9 21v-6h6v6"/>
-  </svg>
-  <span>Home</span>
-</a>
+      routerLink="/home"
+      routerLinkActive="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M3 10.5 12 3l9 7.5"/>
+        <path d="M5 9.5V21h14V9.5"/>
+        <path d="M9 21v-6h6v6"/>
+      </svg>
+      <span>Home</span>
+    </a>
     
-      <a class="nav-btn"
+    <a class="nav-btn"
       routerLink="/projects"
       routerLinkActive="active">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -30,6 +30,16 @@
         <path d="M3 9h18"/>
       </svg>
       <span>Projets</span>
+    </a>
+
+    <a class="nav-btn"
+      *ngIf="owner"
+      [routerLink]="['/owner', owner, 'builds']"
+      routerLinkActive="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <span>Builds</span>
     </a>
 
     <a class="nav-btn"
