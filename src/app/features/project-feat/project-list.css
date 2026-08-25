@@ -21,20 +21,22 @@
 }
 
 .btn-primary {
-  padding: 12px 22px;
-  background: #0f172a;
+  padding: 12px 24px;
+  background: linear-gradient(90deg, #00ADEF, #E20074);
   color: #ffffff;
   font-weight: 700;
   font-size: 0.9rem;
   border: none;
   border-radius: 999px;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 173, 239, 0.25);
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #c2168a;
+  opacity: 0.95;
   transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 173, 239, 0.35);
 }
 
 .btn-primary:disabled {

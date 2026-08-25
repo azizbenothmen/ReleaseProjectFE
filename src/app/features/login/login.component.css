@@ -3,14 +3,10 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #051C3F;
-  background-image:
-    linear-gradient(#0A2A5C 1px, transparent 1px),
-    linear-gradient(90deg, #0A2A5C 1px, transparent 1px);
-  background-size: 48px 48px;
-  background-position: center;
+  background-color: #F8FAFC;
+  background-image: radial-gradient(circle at 50% 30%, rgba(0, 173, 239, 0.08) 0%, rgba(226, 0, 116, 0.04) 50%, rgba(255, 255, 255, 0) 80%);
   padding: 24px;
-  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
 .login-card {
@@ -18,12 +14,12 @@
   max-width: 420px;
   background-color: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 6px;
-  padding: 48px 40px 40px;
+  border-radius: 16px;
+  padding: 44px 36px 36px;
   position: relative;
   overflow: hidden;
-  animation: fadeUp 0.5s ease-out;
-  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+  animation: fadeUp 0.4s ease-out;
+  box-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.08);
 }
 
 .login-card::before {
@@ -32,8 +28,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #08BAEF, #D6037F);
+  height: 4px;
+  background: linear-gradient(90deg, #00ADEF, #E20074);
 }
 
 @keyframes fadeUp {
@@ -178,21 +174,22 @@ h1 {
 .submit-btn {
   width: 100%;
   padding: 14px;
-  margin-top: 6px;
-  background: linear-gradient(90deg, #08BAEF, #D6037F);
+  margin-top: 8px;
+  background: linear-gradient(90deg, #00ADEF, #E20074);
   color: #FFFFFF;
   border: none;
-  border-radius: 3px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 173, 239, 0.25);
+  transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .submit-btn:hover {
-  opacity: 0.9;
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 173, 239, 0.35);
 }
 
 .submit-btn:active {
@@ -207,9 +204,9 @@ h1 {
 }
 
 .footer-note a {
-  color: #08BAEF;
+  color: #00ADEF;
   text-decoration: none;
-  border-bottom: 1px solid #08BAEF;
+  border-bottom: 1px solid #00ADEF;
 }
 
 .footer-note a:hover {

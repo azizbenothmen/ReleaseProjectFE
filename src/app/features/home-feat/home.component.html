@@ -1,18 +1,149 @@
-<div class="shell">
+<div class="home-container">
+  
+  <!-- Header Bar -->
+  <header class="kargo-header">
+    <div class="header-left">
+      <div class="brand-logo" routerLink="/home">
+        <svg viewBox="0 0 100 120" width="28" height="32" fill="none">
+          <circle cx="50" cy="38" r="32" fill="#00ADEF"/>
+          <circle cx="50" cy="82" r="32" fill="#E20074"/>
+          <path d="M 23.5 56 A 32 32 0 0 0 76.5 56 A 32 32 0 0 0 23.5 56 Z" fill="#004B87"/>
+        </svg>
+        <span class="brand-title">ReleasePlateform<span class="by-text">by Elyadata</span></span>
+      </div>
+      
+      <nav class="header-nav">
+        <a routerLink="/projects" class="nav-link">Projets</a>
+        <a routerLink="/projects" class="nav-link">Dépôts</a>
+      </nav>
+    </div>
 
-  <!-- Main content -->
-  <main class="main">
-    <p class="eyebrow">Dashboard</p>
-    <h1>Overview</h1>
-    <p class="subtitle">General statistics for your workspace.</p>
+   
+  </header>
 
-    <section class="stat-grid">
-      <article class="stat-card" *ngFor="let s of stats; let i = index" [style.animation-delay.ms]="i * 60">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <h1 class="hero-title">
+      Automated Tag-to-Deploy<br>
+      
+    </h1>
+    
+    <p class="hero-subtitle">
+      Tag, promote, and deploy straight from GitHub — no manual Helm edits, no glue scrip<br>
+      
+    </p>
+
+    
+
+    <!-- Illustration multi-stage en perspective (Halo Lumineux & Isometric Cards) -->
+    <div class="hero-illustration-wrapper">
+      <div class="glow-backdrop"></div>
+      
+      <div class="stage-pipeline-flow">
+        <!-- Stage 1: Dev / Docker -->
+        <div class="stage-card stage-dev">
+          <div class="stage-badge">Dev / Build</div>
+          <div class="stage-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#00ADEF" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <div class="stage-info">
+            <span class="stage-tag">v1.4.0-rc1</span>
+            <span class="stage-commit">feat: container push</span>
+          </div>
+        </div>
+
+        <!-- Connection Flow Line -->
+        <div class="flow-connector">
+          <svg viewBox="0 0 100 20" class="flow-svg">
+            <path d="M 0 10 Q 50 0 100 10" fill="none" stroke="#00ADEF" stroke-width="2" stroke-dasharray="4 4"/>
+          </svg>
+        </div>
+
+        <!-- Stage 2: Staging / Promotion -->
+        <div class="stage-card stage-staging">
+          <div class="stage-badge stage-badge-active">Staging</div>
+          <div class="stage-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#004B87" stroke-width="2">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+          </div>
+          <div class="stage-info">
+            <span class="stage-tag">v1.4.0</span>
+            <span class="stage-status">Promotion OK</span>
+          </div>
+        </div>
+
+        <!-- Connection Flow Line -->
+        <div class="flow-connector">
+          <svg viewBox="0 0 100 20" class="flow-svg">
+            <path d="M 0 10 Q 50 20 100 10" fill="none" stroke="#E20074" stroke-width="2" stroke-dasharray="4 4"/>
+          </svg>
+        </div>
+
+        <!-- Stage 3: Production -->
+        <div class="stage-card stage-prod">
+          <div class="stage-badge stage-badge-prod">PROD-1</div>
+          <div class="stage-icon">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#E20074" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <div class="stage-info">
+            <span class="stage-tag">v1.4.0</span>
+            <span class="stage-health">● Live Healthy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Statistics Section -->
+  <section class="stats-section">
+    <div class="section-header">
+      <h2>Statistiques Dynamiques</h2>
+      <p class="section-subtitle">Données système synchronisées en temps réel</p>
+    </div>
+
+    <div class="stat-grid">
+      <article class="stat-card" *ngFor="let s of stats; let i = index" [style.animation-delay.ms]="i * 80">
+        <div class="card-icon-wrapper">
+          <ng-container [ngSwitch]="s.icon">
+            <svg *ngSwitchCase="'folder'" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00ADEF" stroke-width="2">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <svg *ngSwitchCase="'repo'" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#004B87" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <svg *ngSwitchCase="'tag'" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#E20074" stroke-width="2">
+              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+              <line x1="7" y1="7" x2="7.01" y2="7"></line>
+            </svg>
+            <svg *ngSwitchDefault viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#16A34A" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </ng-container>
+        </div>
+
         <p class="stat-label">{{ s.label }}</p>
-        <p class="stat-value">{{ s.value }}</p>
-        <p class="stat-delta" [class.negative]="!s.positive">{{ s.delta }}</p>
+        
+        <div class="stat-value-row">
+          <span class="stat-value" *ngIf="!loading">{{ s.value }}</span>
+          <span class="stat-skeleton" *ngIf="loading"></span>
+        </div>
+
+        <p class="stat-delta" [class.positive]="s.positive">{{ s.delta }}</p>
       </article>
-    </section>
-  </main>
+    </div>
+  </section>
 
 </div>

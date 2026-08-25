@@ -23,7 +23,6 @@
     <div class="profile-hero">
       <div class="hero-avatar">{{ initials() }}</div>
       <h1 class="hero-name">{{ u.fullName }}</h1>
-      <p class="hero-role">{{ u.role }} at Elyadata GitOps</p>
 
       <div class="hero-pills-row">
         <div class="hero-pill">
@@ -105,10 +104,7 @@
               <span class="item-label">Email Address</span>
               <span class="item-val">{{ u.email }}</span>
             </div>
-            <div class="info-item-row">
-              <span class="item-label">Platform Role</span>
-              <span class="item-val role-badge-txt" [attr.data-role]="u.role">{{ u.role }}</span>
-            </div>
+            
             <div class="info-item-row">
               <span class="item-label">Account Status</span>
               <span class="item-val text-green font-bold">{{ u.status | uppercase }}</span>

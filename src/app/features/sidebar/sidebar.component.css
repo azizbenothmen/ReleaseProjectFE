@@ -10,7 +10,7 @@
   box-sizing: border-box;
   position: sticky;
   top: 0;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
   overflow-y: auto;
   z-index: 100;
 }
@@ -22,37 +22,40 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #08BAEF, #D6037F);
+  background: linear-gradient(90deg, #00ADEF, #E20074);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 40px;
-  padding: 0 10px;
+  gap: 12px;
+  margin-bottom: 36px;
+  padding: 4px 8px;
 }
 
-.brand-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #08BAEF;
+.elyadata-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 0 4px rgba(8, 186, 239, 0.12);
 }
 
 .brand-name {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
   color: #0F172A;
+}
+
+.brand-sub {
+  font-weight: 600;
+  color: #00ADEF;
 }
 
 .nav-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
 }
 
@@ -61,24 +64,24 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 16px;
   background-color: transparent;
   border: 1px solid transparent;
-  border-left: 2px solid transparent;
-  border-radius: 6px;
+  border-left: 3px solid transparent;
+  border-radius: 8px;
   color: #64748B;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   text-decoration: none;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .nav-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   flex-shrink: 0;
   stroke: currentColor;
   transition: stroke 0.18s ease;
@@ -92,31 +95,31 @@
 }
 
 .nav-btn:focus-visible {
-  outline: 2px solid #08BAEF;
+  outline: 2px solid #00ADEF;
   outline-offset: 2px;
 }
 
 .nav-btn.active {
-  background-color: #EFF6FF;
-  border-color: #DBEAFE;
-  border-left: 2px solid #08BAEF;
-  color: #0F172A;
-  font-weight: 600;
+  background-color: #F0F9FF;
+  border-color: #E0F2FE;
+  border-left: 3px solid #00ADEF;
+  color: #00ADEF;
+  font-weight: 700;
 }
 
 .nav-btn.active svg {
-  stroke: #08BAEF;
+  stroke: #00ADEF;
 }
 
 .logout-btn {
   margin-top: auto;
-  color: #D6037F;
+  color: #E20074;
 }
 
 .logout-btn:hover {
   background-color: #FDF2F8;
   border-color: #FBCFE8;
-  color: #D6037F;
+  color: #E20074;
   transform: translateX(2px);
 }
 
@@ -132,8 +135,8 @@
   }
   .brand { margin-bottom: 0; }
   .nav-group { flex-direction: row; flex: none; gap: 4px; }
-  .nav-btn { border-left: none; border-bottom: 2px solid transparent; }
-  .nav-btn.active { border-left: none; border-bottom: 2px solid #08BAEF; }
+  .nav-btn { border-left: none; border-bottom: 3px solid transparent; }
+  .nav-btn.active { border-left: none; border-bottom: 3px solid #00ADEF; }
   .nav-btn span { display: none; }
   .logout-btn { margin-top: 0; margin-left: auto; }
 }
