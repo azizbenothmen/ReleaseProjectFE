@@ -1,5 +1,4 @@
 <div class="page-container">
-  <!-- Page Header -->
   <div class="page-header">
     <div>
       <h2 class="page-title">Builds</h2>
@@ -13,13 +12,11 @@
     </button>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="loading" class="state-container loading-state">
     <div class="spinner"></div>
     <p>Chargement des builds en cours...</p>
   </div>
 
-  <!-- Error State -->
   <div *ngIf="errorMessage && !loading" class="state-container error-state">
     <div class="error-icon">✕</div>
     <h3>Erreur de chargement</h3>
@@ -27,10 +24,8 @@
     <button type="button" class="btn-primary" (click)="fetchBuilds(owner)">Réessayer</button>
   </div>
 
-  <!-- Main Content (Cards Grid & Empty State) -->
   <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
     
-    <!-- Grid of Cards -->
     <div class="cards-grid" *ngIf="builds.length > 0">
       <div 
         class="build-card" 
@@ -40,7 +35,6 @@
         tabindex="0"
         (keyup.enter)="goToBuildDetail(build)">
 
-        <!-- Card Top Section -->
         <div class="card-header">
           <div class="card-title-group">
             <h3 class="card-title">{{ build.nameBuild || ('Build #' + build.num) }}</h3>
@@ -52,7 +46,6 @@
           </span>
         </div>
 
-        <!-- Card Body Metadata -->
         <div class="card-body">
           <div class="info-row">
             <span class="info-label">
@@ -80,7 +73,6 @@
             </span>
           </div>
 
-          <!-- Associated Project & Repo -->
           <div class="card-associations">
             <div class="assoc-item" *ngIf="build.project?.name">
               <span class="assoc-tag project-tag">
@@ -103,7 +95,6 @@
           </div>
         </div>
 
-        <!-- Card Footer Link Indicator -->
         <div class="card-footer">
           <span class="view-detail-text">Voir le détail du build</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
@@ -115,7 +106,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div class="empty-state" *ngIf="builds.length === 0">
       <div class="empty-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">

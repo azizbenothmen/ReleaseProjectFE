@@ -111,7 +111,6 @@ export class BuildListComponent implements OnInit {
 
     if (isNaN(ms) || ms < 0) return 'N/A';
 
-    // If value is small, it might be in seconds instead of ms
     const totalSeconds = ms > 100000 ? Math.floor(ms / 1000) : Math.floor(ms);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;

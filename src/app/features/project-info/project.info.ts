@@ -124,7 +124,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.currentUser.set(user);
       },
       error: () => {
-        // Fallback user state handled gracefully
       }
     });
   }

@@ -47,7 +47,6 @@ export class BuildDetailComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        // Fallback: If single fetch fails or returns error, construct basic display if build state passed via history
         const stateBuild = history.state?.build;
         if (stateBuild) {
           this.build = stateBuild;
