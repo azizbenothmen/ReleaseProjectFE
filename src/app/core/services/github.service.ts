@@ -50,9 +50,9 @@ export class GithubService {
     );
   }
 
-  createTag(owner: string, repo: string, branch: string, tag: CreateTagRequest,projectid:string): Observable<CreateTagResponse> {
+  createTag(owner: string, repo: string, branch: string, buildName: string, tag: CreateTagRequest, projectid: string): Observable<CreateTagResponse> {
     return this.http.post<CreateTagResponse>(
-      `${this.baseUrl}/api/${owner}/${projectid}/${repo}/${branch}`,
+      `${this.baseUrl}/api/${owner}/${projectid}/${repo}/${branch}/build/${buildName}`,
       tag
     );
   }

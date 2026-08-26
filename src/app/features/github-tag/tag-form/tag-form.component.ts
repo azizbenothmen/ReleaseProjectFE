@@ -43,6 +43,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
       repo: ['', Validators.required],
       branch: ['', Validators.required],
       commit: ['', Validators.required],
+      buildName: ['', Validators.required],
       tagName: ['', Validators.required],
       message: ['', Validators.required],
       taggerName: [{ value: '', disabled: true }, Validators.required],
@@ -194,7 +195,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
 
     this.loading = true;
 
-    const { owner, repo, branch, commit, tagName, message, taggerName, taggerEmail } = this.tagForm.getRawValue();
+    const { owner, repo, branch, commit, buildName, tagName, message, taggerName, taggerEmail } = this.tagForm.getRawValue();
 
     const tagRequest: CreateTagRequest = {
       tag: tagName,
@@ -208,7 +209,7 @@ export class TagFormComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.githubService.createTag(owner, repo, branch, tagRequest,this.projectId).subscribe({
+    this.githubService.createTag(owner, repo, branch, buildName, tagRequest, this.projectId).subscribe({
       next: (response) => {
         this.loading = false;
         this.toastr.success(`Tag "${tagRequest.tag}" créé avec succès !`);
