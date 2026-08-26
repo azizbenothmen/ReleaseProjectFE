@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/login.component';
+import { LandingComponent } from './features/landing/landing.component';
 import { TagFormComponent } from './features/github-tag/tag-form/tag-form.component';
 import { RepoListComponent } from './features/Repo-list/repo-list.component';
 import { HomeComponent } from './features/home-feat/home.component';
@@ -14,6 +15,11 @@ import { BuildListComponent } from './features/build-feat/build-list.component';
 import { BuildDetailComponent } from './features/build-feat/build-detail.component';
 
 export const routes: Routes = [
+  {
+    path: 'welcome',
+    component: LandingComponent,
+    canActivate: [noAuthGuard]
+  },
   {
     path: 'login',
     component: LoginComponent,
@@ -34,7 +40,7 @@ export const routes: Routes = [
       { path: 'project/:id', component: ProjectDetailComponent },
       { path: 'profile', component: UserProfileComponent },
       { path: 'profile/:username', component: UserProfileComponent },
-      { path: '**', redirectTo: '/home' }
     ],
   },
+  { path: '**', redirectTo: '/welcome' }
 ];

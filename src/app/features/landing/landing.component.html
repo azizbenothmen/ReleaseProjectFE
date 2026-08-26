@@ -1,0 +1,310 @@
+<div class="public-landing">
+  <!-- TOP ANNOUNCEMENT BANNER -->
+  <div class="top-banner">
+    <div class="banner-content">
+      <span class="banner-tag">GitHub Partner</span>
+      <span class="banner-text">Automate your release tags & pipeline deployments with GitHub API integration.</span>
+      <button type="button" class="banner-link" (click)="scrollToSection('github-scm')">Learn How →</button>
+    </div>
+  </div>
+
+  <!-- NAVBAR HEADER -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand" (click)="scrollToSection('hero')">
+        <div class="brand-icon">
+          <svg viewBox="0 0 100 120" width="24" height="28" fill="none">
+            <circle cx="50" cy="38" r="32" fill="#00ADEF"/>
+            <circle cx="50" cy="82" r="32" fill="#E20074"/>
+            <path d="M 23.5 56 A 32 32 0 0 0 76.5 56 A 32 32 0 0 0 23.5 56 Z" fill="#004B87"/>
+          </svg>
+        </div>
+        <span class="brand-text">elyadata <span class="brand-sub">Release</span></span>
+      </div>
+
+      <!-- DESKTOP NAV -->
+      <nav class="desktop-nav">
+        <button type="button" class="nav-link" (click)="scrollToSection('github-scm')">GitHub SCM</button>
+        <button type="button" class="nav-link" (click)="scrollToSection('features')">Features</button>
+        <button type="button" class="nav-link" (click)="scrollToSection('workflow')">Workflow</button>
+        <button type="button" class="nav-link" (click)="scrollToSection('tech-specs')">Tech Specs</button>
+      </nav>
+
+      <!-- HEADER ACTIONS -->
+      <div class="header-actions">
+        <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="github-icon-link"
+          title="GitHub Provider">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+
+        <ng-container *ngIf="!authService.isAuthenticated(); else loggedInBtn">
+          <button type="button" class="btn-get-started" (click)="goToLogin()">
+            Log In
+          </button>
+        </ng-container>
+
+        <ng-template #loggedInBtn>
+          <button type="button" class="btn-get-started btn-dashboard" (click)="goToDashboard()">
+            Dashboard
+          </button>
+        </ng-template>
+
+        <button type="button" class="mobile-toggle" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path *ngIf="!isMobileMenuOpen" d="M4 6h16M4 12h16M4 18h16"/>
+            <path *ngIf="isMobileMenuOpen" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- MOBILE MENU DRAWER -->
+    <div class="mobile-menu" *ngIf="isMobileMenuOpen">
+      <button type="button" class="mobile-link" (click)="scrollToSection('github-scm')">GitHub SCM</button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('features')">Features</button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('workflow')">Workflow</button>
+      <button type="button" class="mobile-link" (click)="scrollToSection('tech-specs')">Tech Specs</button>
+      <div class="mobile-actions">
+        <button type="button" class="btn-get-started w-full" (click)="authService.isAuthenticated() ? goToDashboard() : goToLogin()">
+          {{ authService.isAuthenticated() ? 'Dashboard' : 'Log In' }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="hero-section">
+    <div class="hero-container">
+      <h1 class="hero-title">
+        Automated GitHub Release &<br>Git Tag Orchestration
+      </h1>
+      <p class="hero-subtitle">
+        Seamlessly create semantic release tags, inspect target branch commits, and track multi-repository builds — with GitHub as your single source of truth.
+      </p>
+
+      <div class="hero-actions">
+        <button type="button" class="btn-hero-primary" (click)="authService.isAuthenticated() ? goToDashboard() : goToLogin()">
+          <span>{{ authService.isAuthenticated() ? 'Go to Dashboard' : 'Get Started' }}</span>
+        </button>
+
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="btn-hero-github">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          <span>GitHub SCM</span>
+        </a>
+      </div>
+
+      <!-- ISOMETRIC / GRAPHIC PIPELINE VISUALIZER -->
+      <div class="hero-illustration">
+        <div class="pipeline-graphic">
+          <div class="pipeline-node node-repo">
+            <div class="node-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="node-title">GitHub Repo</span>
+            <span class="node-sub">main branch</span>
+          </div>
+
+          <div class="pipeline-connector">
+            <span class="connector-line"></span>
+            <span class="connector-arrow">➔</span>
+          </div>
+
+          <div class="pipeline-node node-commit">
+            <div class="node-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M1.05 12H7M17 12h5.95"/></svg>
+            </div>
+            <span class="node-title">Commit SHA</span>
+            <span class="node-sub">Lock release Target</span>
+          </div>
+
+          <div class="pipeline-connector">
+            <span class="connector-line"></span>
+            <span class="connector-arrow">➔</span>
+          </div>
+
+          <div class="pipeline-node node-tag">
+            <div class="node-icon tag-icon-color">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
+            <span class="node-title">Git Tag</span>
+            <span class="node-sub">v1.0.0 SemVer</span>
+          </div>
+
+          <div class="pipeline-connector">
+            <span class="connector-line"></span>
+            <span class="connector-arrow">➔</span>
+          </div>
+
+          <div class="pipeline-node node-build">
+            <div class="node-icon build-icon-color">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <span class="node-title">CI / Build</span>
+            <span class="node-sub">Status 100% OK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GITHUB EXCLUSIVE SCM SECTION -->
+  <section id="github-scm" class="section-block">
+    <div class="section-container">
+      <div class="section-header center">
+        <span class="section-badge">Exclusive SCM Integration</span>
+        <h2 class="section-title">Why GitHub is Our Single SCM Provider</h2>
+        <p class="section-subtitle">
+          We focus exclusively on GitHub REST and Git Data APIs — eliminating 3rd-party SCM overhead to deliver faster, reliable release workflows.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card-box">
+          <div class="card-icon cyan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+          </div>
+          <h3>Branch & Commit Lock</h3>
+          <p>Inspect active repository branches and select exact commit SHAs directly from GitHub's live history.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="card-icon magenta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <h3>Automated Tagging</h3>
+          <p>Instantly generate semantic tags (e.g. <code>v1.0.0</code>) with custom release notes pushed straight to GitHub.</p>
+        </div>
+
+        <div class="card-box">
+          <div class="card-icon navy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Multi-Repo Suites</h3>
+          <p>Group multiple GitHub repositories into unified project suites for coordinated version releases.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section id="features" class="section-block bg-alt">
+    <div class="section-container">
+      <div class="section-header center">
+        <span class="section-badge">Core Capabilities</span>
+        <h2 class="section-title">Everything Needed for Clean Releases</h2>
+        <p class="section-subtitle">Designed for engineering teams who demand precision and transparency.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="feature-card">
+          <div class="f-num">01</div>
+          <div class="f-content">
+            <h4>Project & Suite Management</h4>
+            <p>Organize microservices and repositories into logical project suites with clear owner permissions.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-num">02</div>
+          <div class="f-content">
+            <h4>Targeted Git Tagging</h4>
+            <p>Select target branches, review recent commit history, and push semantic release tags without touching command-line Git.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-num">03</div>
+          <div class="f-content">
+            <h4>Build & Pipeline Insights</h4>
+            <p>Track real-time build executions, compilation states, and release history per owner and environment.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="f-num">04</div>
+          <div class="f-content">
+            <h4>Role-Based Access & JWT</h4>
+            <p>Secure session management with token verification integrated directly with user profile services.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKFLOW SECTION -->
+  <section id="workflow" class="section-block">
+    <div class="section-container">
+      <div class="section-header center">
+        <span class="section-badge">Simple 4-Step Flow</span>
+        <h2 class="section-title">How It Works</h2>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-circle">1</div>
+          <h4>Connect Repo</h4>
+          <p>Select your synchronized GitHub repository & project suite.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">2</div>
+          <h4>Inspect Commit</h4>
+          <p>Pick the active branch and lock the precise commit SHA.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">3</div>
+          <h4>Define Tag</h4>
+          <p>Enter semantic tag version (e.g. <code>v1.2.0</code>) and changelog.</p>
+        </div>
+
+        <div class="step-item">
+          <div class="step-circle">4</div>
+          <h4>Deploy & Monitor</h4>
+          <p>Publish tag to GitHub and track build pipeline progress.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECH SPECS SECTION -->
+  <section id="tech-specs" class="section-block bg-alt">
+    <div class="section-container text-center">
+      <span class="section-badge">Technology Stack</span>
+      <h2 class="section-title">Modern & Standardized</h2>
+      <div class="tech-pills">
+        <span class="pill">Angular 21</span>
+        <span class="pill">Tailwind CSS v4</span>
+        <span class="pill">GitHub REST APIs</span>
+        <span class="pill">TypeScript 5.9</span>
+        <span class="pill">Express Backend</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="cta-banner">
+    <div class="cta-container">
+      <h2>Start Managing Your Releases Today</h2>
+      <p>Log in to access your projects, repository branches, and release automation tools.</p>
+      <button type="button" class="btn-hero-primary" (click)="authService.isAuthenticated() ? goToDashboard() : goToLogin()">
+        {{ authService.isAuthenticated() ? 'Go to Dashboard' : 'Log In Now' }}
+      </button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <p>© 2026 <strong>elyadata Release</strong>. Powered by GitHub API Integration.</p>
+    </div>
+  </footer>
+</div>

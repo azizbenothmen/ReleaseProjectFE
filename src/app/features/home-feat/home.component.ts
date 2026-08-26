@@ -35,10 +35,10 @@ export class HomeComponent implements OnInit {
   username = '';
   
   stats: StatCard[] = [
-    { label: 'Projets actifs', value: '-', delta: 'Chargement...', positive: true, icon: 'folder' },
-    { label: 'Dépôts importés', value: '-', delta: 'Chargement...', positive: true, icon: 'repo' },
-    { label: 'Releases & Tags', value: '-', delta: 'Chargement...', positive: true, icon: 'tag' },
-    { label: 'Statut système', value: '100%', delta: 'Services opérationnels', positive: true, icon: 'check' }
+    { label: 'Active Projects', value: '-', delta: 'Loading...', positive: true, icon: 'folder' },
+    { label: 'Imported Repositories', value: '-', delta: 'Loading...', positive: true, icon: 'repo' },
+    { label: 'Releases & Tags', value: '-', delta: 'Loading...', positive: true, icon: 'tag' },
+    { label: 'System Status', value: '100%', delta: 'Operational Services', positive: true, icon: 'check' }
   ];
 
   ngOnInit(): void {
@@ -115,30 +115,30 @@ export class HomeComponent implements OnInit {
   private updateStatsDisplay(activeProjects: number, totalProjects: number, totalRepos: number, totalTags: number, detailsLoaded: boolean): void {
     this.stats = [
       { 
-        label: 'Projets actifs', 
+        label: 'Active Projects', 
         value: `${activeProjects}`, 
-        delta: `${totalProjects} projet(s) au total`, 
+        delta: `${totalProjects} total project(s)`, 
         positive: true, 
         icon: 'folder' 
       },
       { 
-        label: 'Dépôts importés', 
+        label: 'Imported Repositories', 
         value: detailsLoaded ? `${totalRepos}` : (totalRepos > 0 ? `${totalRepos}` : '...'), 
-        delta: 'Connectés à GitOps', 
+        delta: 'GitOps Connected', 
         positive: true, 
         icon: 'repo' 
       },
       { 
         label: 'Releases & Tags', 
         value: detailsLoaded ? `${totalTags}` : (totalTags > 0 ? `${totalTags}` : '...'), 
-        delta: 'Tags Git créés', 
+        delta: 'Git tags created', 
         positive: true, 
         icon: 'tag' 
       },
       { 
-        label: 'Statut système', 
+        label: 'System Status', 
         value: '100%', 
-        delta: 'Services opérationnels', 
+        delta: 'Operational Services', 
         positive: true, 
         icon: 'check' 
       }
