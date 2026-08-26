@@ -30,7 +30,7 @@ export class BuildDetailComponent implements OnInit {
       if (this.owner && this.buildId) {
         this.fetchBuildDetails(this.owner, this.buildId);
       } else {
-        this.errorMessage = 'Identifiant de build manquant.';
+        this.errorMessage = 'Missing build ID.';
         this.loading = false;
       }
     });
@@ -88,23 +88,64 @@ export class BuildDetailComponent implements OnInit {
   formatDuration(duration: number | string | null | undefined): string {
     if (duration == null || duration === '') return 'N/A';
     
-    let ms: number;
-    if (typeof duration === 'string') {
-      ms = parseInt(duration, 10);
-    } else {
-      ms = duration;
+    let ms = typeof duration === 'string' ? parseFloat(duration) : duration;
+    if (isNaN(ms) || ms < 0) return 'N/A';
+    if (ms === 0) return '0s';
+
+    let totalSeconds = Math.floor(ms / 1000);
+    if (totalSeconds === 0 && ms > 0) {
+      return `${Math.round(ms)}ms`;
     }
 
-    if (isNaN(ms) || ms < 0) return 'N/A';
-
-    const totalSeconds = ms > 100000 ? Math.floor(ms / 1000) : Math.floor(ms);
-    const minutes = Math.floor(totalSeconds / 60);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
+    if (hours > 0) {
+      return `${hours}h ${minutes < 10 ? '0' : ''}${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
+    }
     if (minutes > 0) {
       return `${minutes}m ${seconds < 10 ? '0' : ''}${seconds}s`;
     }
     return `${seconds}s`;
+  }
+
+  formatDate(time: string | number | null | undefined): string {
+    if (time == null || time === '') return 'Not available';
+
+    let dateObj: Date;
+
+    if (typeof time === 'number') {
+      const ms = time < 10000000000 ? time * 1000 : time;
+      dateObj = new Date(ms);
+    } else if (typeof time === 'string') {
+      const trimmed = time.trim();
+      if (/^\d+$/.test(trimmed)) {
+        const num = parseInt(trimmed, 10);
+        const ms = num < 10000000000 ? num * 1000 : num;
+        dateObj = new Date(ms);
+      } else {
+        const isoString = trimmed.includes(' ') && !trimmed.includes('T')
+          ? trimmed.replace(' ', 'T')
+          : trimmed;
+        dateObj = new Date(isoString);
+      }
+    } else {
+      dateObj = new Date(time);
+    }
+
+    if (isNaN(dateObj.getTime())) {
+      return 'Not available';
+    }
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
 
   private extractErrorMessage(err: any): string {
@@ -114,6 +155,6 @@ export class BuildDetailComponent implements OnInit {
     if (typeof err.error === 'string') {
       return err.error;
     }
-    return err.message || 'Impossible de récupérer les détails du build.';
+    return err.message || 'Unable to fetch build details.';
   }
 }

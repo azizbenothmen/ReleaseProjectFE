@@ -211,6 +211,25 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   get status() { return this.projectForm.get('status'); }
 
   private extractErrorMessage(err: any): string {
+    const rawMessage = typeof err?.error === 'string'
+      ? err.error
+      : err?.error?.message || err?.message || '';
+
+    const fullErrorStr = (rawMessage + ' ' + JSON.stringify(err || {})).toLowerCase();
+
+    if (
+      fullErrorStr.includes('uk1e447b96pedrvtxw44ot4qxem') ||
+      fullErrorStr.includes('clé dupliquée') ||
+      fullErrorStr.includes('cle dupliquee') ||
+      fullErrorStr.includes('duplicate key') ||
+      fullErrorStr.includes('existe déjà') ||
+      fullErrorStr.includes('already exists') ||
+      fullErrorStr.includes('contrainte unique') ||
+      fullErrorStr.includes('unique constraint')
+    ) {
+      return 'Project Existed';
+    }
+
     if (err.error?.message) {
       return err.error.message;
     }

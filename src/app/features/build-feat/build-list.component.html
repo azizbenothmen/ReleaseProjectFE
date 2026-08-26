@@ -2,26 +2,26 @@
   <div class="page-header">
     <div>
       <h2 class="page-title">Builds</h2>
-      <p class="page-subtitle" *ngIf="owner">Historique des builds Jenkins de <strong>@{{ owner }}</strong></p>
+      <p class="page-subtitle" *ngIf="owner">Jenkins build history for <strong>@{{ owner }}</strong></p>
     </div>
     <button type="button" class="btn-secondary" (click)="fetchBuilds(owner)" [disabled]="loading">
       <svg class="icon-refresh" [class.spinning]="loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
       </svg>
-      Actualiser
+      Refresh
     </button>
   </div>
 
   <div *ngIf="loading" class="state-container loading-state">
     <div class="spinner"></div>
-    <p>Chargement des builds en cours...</p>
+    <p>Loading builds...</p>
   </div>
 
   <div *ngIf="errorMessage && !loading" class="state-container error-state">
     <div class="error-icon">✕</div>
-    <h3>Erreur de chargement</h3>
+    <h3>Loading Error</h3>
     <p>{{ errorMessage }}</p>
-    <button type="button" class="btn-primary" (click)="fetchBuilds(owner)">Réessayer</button>
+    <button type="button" class="btn-primary" (click)="fetchBuilds(owner)">Retry</button>
   </div>
 
   <div class="cards-wrapper" *ngIf="!loading && !errorMessage">
@@ -47,31 +47,9 @@
         </div>
 
         <div class="card-body">
-          <div class="info-row">
-            <span class="info-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-              </svg>
-              Durée
-            </span>
-            <span class="info-value cell-strong">{{ formatDuration(build.duration) }}</span>
-          </div>
+          
 
-          <div class="info-row">
-            <span class="info-label">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              Lancement
-            </span>
-            <span class="info-value">
-              {{ build.time ? (build.time | date:'dd/MM/yyyy HH:mm') : 'Non spécifiée' }}
-            </span>
-          </div>
+          
 
           <div class="card-associations">
             <div class="assoc-item" *ngIf="build.project?.name">
@@ -79,7 +57,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="assoc-icon">
                   <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
                 </svg>
-                Projet: {{ build.project?.name }}
+                Project: {{ build.project?.name }}
               </span>
             </div>
 
@@ -96,7 +74,7 @@
         </div>
 
         <div class="card-footer">
-          <span class="view-detail-text">Voir le détail du build</span>
+          <span class="view-detail-text">View build details</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-icon">
             <line x1="5" y1="12" x2="19" y2="12"/>
             <polyline points="12 5 19 12 12 19"/>
@@ -112,8 +90,8 @@
           <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
         </svg>
       </div>
-      <h3>Aucun build trouvé</h3>
-      <p>Aucun historique de build Jenkins n'est disponible pour l'owner <strong>@{{ owner }}</strong> pour le moment.</p>
+      <h3>No builds found</h3>
+      <p>No Jenkins build history is available for owner <strong>@{{ owner }}</strong> at the moment.</p>
     </div>
 
   </div>
