@@ -23,7 +23,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   submitting = false;
   owner:string='';
   formErrorMessage: string | null = null;
-  deletingId: number | string | null = null;
+  deletingId: number | string | undefined | null = null;
 
   // Notification toast
   notification: { type: 'success' | 'error'; message: string } | null = null;
@@ -163,23 +163,38 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.router.navigate(['projet', project.id,'repo']);
   }
 
-  deleteProject(project: Project): void {
-    if (project.id == null) {
-      this.showNotification('error', 'Invalid project (missing identifier).');
-      return;
-    }
+  projectToDelete: Project | null = null;
+  showDeleteModal = false;
 
-    this.deletingId = project.id;
+  openDeleteModal(event: Event, project: Project): void {
+    event.stopPropagation();
+    if (!project.id) return;
+    this.projectToDelete = project;
+    this.showDeleteModal = true;
+  }
 
-    this.projectService.deleteProject(project.id).subscribe({
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.projectToDelete = null;
+  }
+
+  confirmDeleteProject(): void {
+    if (!this.projectToDelete || this.projectToDelete.id == null) return;
+    const projectId = this.projectToDelete.id;
+
+    this.deletingId = projectId;
+
+    this.projectService.deleteProject(projectId).subscribe({
       next: () => {
-        this.projects = this.projects.filter(p => p.id !== project.id);
+        this.projects = this.projects.filter(p => p.id !== projectId);
         this.deletingId = null;
+        this.closeDeleteModal();
         this.showNotification('success', 'Project deleted successfully.');
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.deletingId = null;
+        this.closeDeleteModal();
         this.showNotification('error', 'Unable to delete the project.');
         this.cdr.detectChanges();
       }

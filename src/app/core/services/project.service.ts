@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Project, CreateProjectRequest, CurrentUser } from '../models/project.model';
 
 @Injectable({
@@ -24,7 +24,15 @@ export class ProjectService {
     return this.http.get<CurrentUser>(`${this.baseUrl}/api/auth/me`);
   }
 
-  deleteProject(id: number | string): Observable<string> {
-  return this.http.get(`${this.baseUrl}/delete/${id}`, { responseType: 'text' });
-}
+  deleteProject(id: number | string): Observable<any> {
+    const url = `${this.baseUrl}/project/${id}/delete`;
+    return this.http.delete(url, { responseType: 'text' }).pipe(
+      catchError((err: any) => {
+        if (err.status === 404 || err.status === 405) {
+          return this.http.get(`${this.baseUrl}/delete/${id}`, { responseType: 'text' });
+        }
+        return throwError(() => err);
+      })
+    );
+  }
 }

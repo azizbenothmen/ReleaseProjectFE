@@ -40,24 +40,70 @@
             <h3 class="card-title">{{ build.nameBuild || ('Build #' + build.num) }}</h3>
             <span class="build-num" *ngIf="build.num">#{{ build.num }}</span>
           </div>
-          <span class="badge" [ngClass]="getBadgeClass(build.resultat)">
-            <span class="status-dot"></span>
-            {{ build.resultat || 'IN_PROGRESS' }}
-          </span>
+          <div class="card-header-actions">
+            <span class="badge" [ngClass]="getBadgeClass(build.resultat)">
+              <span class="status-dot"></span>
+              {{ build.resultat || 'IN_PROGRESS' }}
+            </span>
+            <button
+              type="button"
+              class="btn-delete-build"
+              title="Supprimer ce build"
+              [disabled]="deletingId === build.id"
+              (click)="openDeleteModal($event, build)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="card-body">
-          
+          <div class="info-row" *ngIf="build.id">
+            <span class="info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              ID:
+            </span>
+            <span class="info-value cell-strong">{{ build.id }}</span>
+          </div>
 
-          
+          <div class="info-row" *ngIf="getBuildDate(build)">
+            <span class="info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Date:
+            </span>
+            <span class="info-value">{{ getBuildDate(build) }}</span>
+          </div>
 
-          <div class="card-associations">
+          <div class="info-row" *ngIf="getBuildDuration(build)">
+            <span class="info-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="info-icon">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Durée:
+            </span>
+            <span class="info-value">{{ getBuildDuration(build) }}</span>
+          </div>
+
+          <div class="card-associations" *ngIf="build.project?.name || build.repo?.name">
             <div class="assoc-item" *ngIf="build.project?.name">
               <span class="assoc-tag project-tag">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="assoc-icon">
                   <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
                 </svg>
-                Project: {{ build.project?.name }}
+                Projet: {{ build.project?.name }}
               </span>
             </div>
 
@@ -94,5 +140,36 @@
       <p>No Jenkins build history is available for owner <strong>@{{ owner }}</strong> at the moment.</p>
     </div>
 
+  </div>
+
+  <!-- CUSTOM CONFIRMATION MODAL -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-icon-danger">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          <line x1="10" y1="11" x2="10" y2="17"></line>
+          <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+      </div>
+
+      <h3 class="modal-title">Supprimer le build</h3>
+      <p class="modal-description">
+        Êtes-vous sûr de vouloir supprimer le build
+        <strong>"{{ buildToDelete?.nameBuild || ('Build #' + buildToDelete?.num) }}"</strong> ?<br>
+        Cette action est définitive.
+      </p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" (click)="closeDeleteModal()" [disabled]="deletingId !== null">
+          Annuler
+        </button>
+        <button type="button" class="btn-modal-delete" (click)="confirmDelete()" [disabled]="deletingId !== null">
+          <span *ngIf="deletingId === null">Oui, supprimer</span>
+          <span *ngIf="deletingId !== null">Suppression en cours...</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>

@@ -67,6 +67,32 @@ export class BuildDetailComponent implements OnInit {
     }
   }
 
+  showDeleteModal: boolean = false;
+
+  openDeleteModal(): void {
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+  }
+
+  confirmDelete(): void {
+    if (!this.buildId) return;
+
+    this.buildService.deleteBuild(this.buildId).subscribe({
+      next: () => {
+        this.closeDeleteModal();
+        this.goBack();
+      },
+      error: (err) => {
+        console.error('Error deleting build:', err);
+        this.closeDeleteModal();
+        this.goBack();
+      }
+    });
+  }
+
   getBadgeClass(status: BuildResult | undefined): string {
     if (!status) return 'badge-gray';
     const s = status.toUpperCase();
@@ -83,6 +109,20 @@ export class BuildDetailComponent implements OnInit {
       default:
         return 'badge-gray';
     }
+  }
+
+  getBuildDate(build: any): string | null {
+    if (!build) return null;
+    const val = build.time ?? build.timestamp ?? build.date ?? build.createdAt ?? build.startTime;
+    if (val == null || val === '') return null;
+    return this.formatDate(val);
+  }
+
+  getBuildDuration(build: any): string | null {
+    if (!build) return null;
+    const val = build.duration ?? build.durationMs ?? build.executionTime;
+    if (val == null || val === '') return null;
+    return this.formatDuration(val);
   }
 
   formatDuration(duration: number | string | null | undefined): string {

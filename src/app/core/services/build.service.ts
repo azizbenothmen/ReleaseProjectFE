@@ -12,7 +12,7 @@ export class BuildService {
 
   
   getBuildsByOwner(owner: string): Observable<Build[]> {
-    const url = `${this.baseUrl}/api/owners/${encodeURIComponent(owner)}/builds`;
+    const url = `${this.baseUrl}/owner/${encodeURIComponent(owner)}/builds`;
     return this.http.get<Build[]>(url).pipe(
       catchError((err) => {
         if (err.status === 404) {
@@ -32,6 +32,18 @@ export class BuildService {
         if (err.status === 404) {
           const fallbackUrl = `${this.baseUrl}/build/${encodeURIComponent(buildId)}`;
           return this.http.get<Build>(fallbackUrl);
+        }
+        return throwError(() => err);
+      })
+    );
+  }
+
+  deleteBuild(buildId: string | number): Observable<any> {
+    const url = `${this.baseUrl}/build/${encodeURIComponent(buildId)}/delete`;
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      catchError((err) => {
+        if (err.status === 405 || err.status === 404) {
+          return this.http.get(url, { responseType: 'text' });
         }
         return throwError(() => err);
       })

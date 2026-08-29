@@ -76,9 +76,47 @@ export class BuildListComponent implements OnInit {
     });
   }
 
+  deletingId: string | number | null = null;
+  showDeleteModal: boolean = false;
+  buildToDelete: Build | null = null;
+
   goToBuildDetail(build: Build): void {
     if (!build.id) return;
     this.router.navigate(['/owner', this.owner, 'builds', build.id]);
+  }
+
+  openDeleteModal(event: Event, build: Build): void {
+    event.stopPropagation();
+    if (!build.id) return;
+    this.buildToDelete = build;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.buildToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.buildToDelete?.id) return;
+    const buildId = this.buildToDelete.id;
+
+    this.deletingId = buildId;
+    this.buildService.deleteBuild(buildId).subscribe({
+      next: () => {
+        this.builds = this.builds.filter(b => b.id !== buildId);
+        this.deletingId = null;
+        this.closeDeleteModal();
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error deleting build:', err);
+        this.builds = this.builds.filter(b => b.id !== buildId);
+        this.deletingId = null;
+        this.closeDeleteModal();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   getBadgeClass(status: BuildResult | undefined): string {
@@ -97,6 +135,20 @@ export class BuildListComponent implements OnInit {
       default:
         return 'badge-gray';
     }
+  }
+
+  getBuildDate(build: any): string | null {
+    if (!build) return null;
+    const val = build.time ?? build.timestamp ?? build.date ?? build.createdAt ?? build.startTime;
+    if (val == null || val === '') return null;
+    return this.formatDate(val);
+  }
+
+  getBuildDuration(build: any): string | null {
+    if (!build) return null;
+    const val = build.duration ?? build.durationMs ?? build.executionTime;
+    if (val == null || val === '') return null;
+    return this.formatDuration(val);
   }
 
   formatDuration(duration: number | string | null | undefined): string {
