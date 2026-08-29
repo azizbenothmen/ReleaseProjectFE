@@ -35,14 +35,14 @@ export class HomeComponent implements OnInit {
   username = '';
   
   stats: StatCard[] = [
-    { label: 'Projets actifs', value: '-', delta: 'Chargement...', positive: true, icon: 'folder' },
-    { label: 'Dépôts importés', value: '-', delta: 'Chargement...', positive: true, icon: 'repo' },
-    { label: 'Releases & Tags', value: '-', delta: 'Chargement...', positive: true, icon: 'tag' },
-    { label: 'Statut système', value: '100%', delta: 'Services opérationnels', positive: true, icon: 'check' }
+    { label: 'Active Projects', value: '-', delta: 'Loading...', positive: true, icon: 'folder' },
+    { label: 'Imported Repositories', value: '-', delta: 'Loading...', positive: true, icon: 'repo' },
+    { label: 'Releases & Tags', value: '-', delta: 'Loading...', positive: true, icon: 'tag' },
+    { label: 'System Status', value: '100%', delta: 'Operational Services', positive: true, icon: 'check' }
   ];
 
   ngOnInit(): void {
-    // 1. Affichage instantané (0ms) si les statistiques sont déjà en cache mémoire
+    // 1. Instant display (0ms) if stats are cached in memory
     if (HomeComponent.statsCache) {
       this.stats = HomeComponent.statsCache;
       this.loading = false;
@@ -52,7 +52,6 @@ export class HomeComponent implements OnInit {
   }
 
   fetchDynamicStats(): void {
-    // Utiliser l'utilisateur actuellement authentifié en mémoire pour éviter une requête réseau inutile
     const currentUser = this.authService.currentUser();
     const user$ = currentUser && currentUser.username ? of(currentUser) : this.projectService.getCurrentUser();
 
@@ -65,7 +64,7 @@ export class HomeComponent implements OnInit {
         return of([]);
       }),
       catchError((err) => {
-        console.error('Erreur chargement projets home', err);
+        console.error('Error loading home projects', err);
         return of([]);
       })
     ).subscribe({
@@ -73,12 +72,10 @@ export class HomeComponent implements OnInit {
         const totalProjects = projects.length;
         const activeProjects = projects.filter(p => p.status === 'ACTIVE' || (p.status as any) === 'ACTIVE').length;
 
-        // 2. Rendu IMMÉDIAT dès réception de la liste des projets (~50ms) sans attendre les détails de chaque projet
         this.updateStatsDisplay(activeProjects, totalProjects, 0, 0, false);
         this.loading = false;
 
         if (projects.length > 0) {
-          // 3. Récupération asynchrone non-bloquante des détails avec timeout de 2s par requête
           const detailRequests = projects.map(p =>
             this.http.get<ProjectDetail>(`http://localhost:8085/project/${p.id}`).pipe(
               timeout(2000),
@@ -101,7 +98,6 @@ export class HomeComponent implements OnInit {
               }
             });
 
-            // Enrichissement progressif dès que tous les détails sont disponibles
             this.updateStatsDisplay(activeProjects, totalProjects, totalRepos, totalTags, true);
           });
         }
@@ -115,30 +111,30 @@ export class HomeComponent implements OnInit {
   private updateStatsDisplay(activeProjects: number, totalProjects: number, totalRepos: number, totalTags: number, detailsLoaded: boolean): void {
     this.stats = [
       { 
-        label: 'Projets actifs', 
+        label: 'Active Projects', 
         value: `${activeProjects}`, 
-        delta: `${totalProjects} projet(s) au total`, 
+        delta: `${totalProjects} total project(s)`, 
         positive: true, 
         icon: 'folder' 
       },
       { 
-        label: 'Dépôts importés', 
+        label: 'Imported Repositories', 
         value: detailsLoaded ? `${totalRepos}` : (totalRepos > 0 ? `${totalRepos}` : '...'), 
-        delta: 'Connectés à GitOps', 
+        delta: 'GitOps Connected', 
         positive: true, 
         icon: 'repo' 
       },
       { 
         label: 'Releases & Tags', 
         value: detailsLoaded ? `${totalTags}` : (totalTags > 0 ? `${totalTags}` : '...'), 
-        delta: 'Tags Git créés', 
+        delta: 'Git tags created', 
         positive: true, 
         icon: 'tag' 
       },
       { 
-        label: 'Statut système', 
+        label: 'System Status', 
         value: '100%', 
-        delta: 'Services opérationnels', 
+        delta: 'Operational Services', 
         positive: true, 
         icon: 'check' 
       }
