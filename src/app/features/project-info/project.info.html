@@ -318,9 +318,9 @@
         } @else {
           <div class="audit-timeline">
             @for (log of auditLogs(); track log.id) {
-              <div class="audit-item">
+              <div class="audit-item" [class.audit-item-failure]="isFailure(log.status, log.action)">
                 <div class="audit-node">
-                  <div class="audit-icon-badge" [attr.data-category]="log.actionCategory || 'GENERAL'">
+                  <div class="audit-icon-badge" [attr.data-category]="log.actionCategory || 'GENERAL'" [class.badge-failure]="isFailure(log.status, log.action)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     </svg>
@@ -332,7 +332,9 @@
                     <div class="audit-action-group">
                       <span class="audit-action-badge">{{ log.action }}</span>
                       <span class="audit-category-tag">{{ log.actionCategory }}</span>
-                      <span class="audit-status-tag" [attr.data-status]="log.status">{{ log.status }}</span>
+                      <span class="audit-status-tag" [attr.data-status]="log.status" [class.status-failure]="isFailure(log.status, log.action)">
+                        {{ log.status }}
+                      </span>
                     </div>
                     <span class="audit-time">{{ log.date | date:'dd/MM/yyyy HH:mm:ss' }}</span>
                   </div>

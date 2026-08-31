@@ -1013,10 +1013,24 @@ h6 {
   text-transform: uppercase;
 }
 
+.audit-status-tag.status-failure,
+.audit-status-tag[data-status="FAILURE"],
 .audit-status-tag[data-status="FAILED"],
 .audit-status-tag[data-status="ERROR"] {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fecaca;
+}
+
+.audit-icon-badge.badge-failure,
+.audit-item-failure .audit-icon-badge {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.audit-item.audit-item-failure {
+  border-left: 4px solid #dc2626;
+  background: #fffcfc;
 }
 
 .audit-time {

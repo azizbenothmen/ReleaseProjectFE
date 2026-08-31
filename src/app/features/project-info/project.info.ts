@@ -209,6 +209,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  isFailure(status?: string, action?: string): boolean {
+    const s = (status || '').toUpperCase();
+    const a = (action || '').toUpperCase();
+    return s.includes('FAIL') || s.includes('ERR') || a.includes('FAIL') || a.includes('ERR');
+  }
+
   goBack(): void {
     this.router.navigate(['/projects']);
   }
