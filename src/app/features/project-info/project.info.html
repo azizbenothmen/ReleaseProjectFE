@@ -292,8 +292,71 @@
 
     @case ('activity') {
       <div class="card">
-        <h3>Recent Activity Log</h3>
-        <p class="muted">No recent activity logged for this project yet.</p>
+        <div class="card-title-bar">
+          <div>
+            <h3>Activity & Audit Logs</h3>
+            <p class="muted-sub">Audit trail of actions performed on this project</p>
+          </div>
+          <button type="button" class="btn-refresh-sm" (click)="fetchAuditLogs()" [disabled]="loadingAuditLogs()">
+            <svg class="icon-spin" [class.spinning]="loadingAuditLogs()" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        @if (loadingAuditLogs()) {
+          <div class="audit-state-box">
+            <div class="spinner-sm"></div>
+            <span>Loading audit logs...</span>
+          </div>
+        } @else if (auditLogsError()) {
+          <div class="audit-state-box error">
+            <span>{{ auditLogsError() }}</span>
+            <button type="button" class="btn-retry" (click)="fetchAuditLogs()">Retry</button>
+          </div>
+        } @else {
+          <div class="audit-timeline">
+            @for (log of auditLogs(); track log.id) {
+              <div class="audit-item">
+                <div class="audit-node">
+                  <div class="audit-icon-badge" [attr.data-category]="log.actionCategory || 'GENERAL'">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div class="audit-content">
+                  <div class="audit-header-line">
+                    <div class="audit-action-group">
+                      <span class="audit-action-badge">{{ log.action }}</span>
+                      <span class="audit-category-tag">{{ log.actionCategory }}</span>
+                      <span class="audit-status-tag" [attr.data-status]="log.status">{{ log.status }}</span>
+                    </div>
+                    <span class="audit-time">{{ log.date | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+                  </div>
+
+                  <p class="audit-description">{{ log.description }}</p>
+
+                  <div class="audit-footer-meta">
+                    <span class="audit-actor">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                      </svg>
+                      Actor: <strong>@{{ log.actor }}</strong>
+                    </span>
+                    <span class="audit-id-code">ID: {{ log.id }}</span>
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-state-box">
+                <p class="muted">No audit activity logs recorded for this project yet.</p>
+              </div>
+            }
+          </div>
+        }
       </div>
     }
   }

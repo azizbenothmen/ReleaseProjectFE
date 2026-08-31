@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit, OnDestroy } from '@angular
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ProjectDetail, ProjectRepo, ProjectTag, ScmProvider } from '../../core/models/project.details';
+import { ProjectDetail, ProjectRepo, ProjectTag, ScmProvider, AuditLog } from '../../core/models/project.details';
 import { ProjectStatus, CurrentUser } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
 
@@ -41,6 +41,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   loading = signal(true);
   error = signal<string | null>(null);
   activeTab = signal<TabId>('overview');
+
+  auditLogs = signal<AuditLog[]>([]);
+  loadingAuditLogs = signal(false);
+  auditLogsError = signal<string | null>(null);
 
   deleting = signal(false);
   showDeleteModal = signal(false);
@@ -180,6 +184,29 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   setTab(tab: TabId): void {
     this.activeTab.set(tab);
+    if (tab === 'activity') {
+      this.fetchAuditLogs();
+    }
+  }
+
+  fetchAuditLogs(id?: string | number): void {
+    const projectId = id ?? this.project()?.id;
+    if (projectId === undefined || projectId === null) return;
+
+    this.loadingAuditLogs.set(true);
+    this.auditLogsError.set(null);
+
+    this.http.get<AuditLog[]>(`http://localhost:8085/project/${projectId}/AuditLogs`).subscribe({
+      next: (logs) => {
+        this.auditLogs.set(logs || []);
+        this.loadingAuditLogs.set(false);
+      },
+      error: (err) => {
+        console.error('Error fetching audit logs', err);
+        this.auditLogsError.set('Unable to load activity audit logs.');
+        this.loadingAuditLogs.set(false);
+      }
+    });
   }
 
   goBack(): void {
