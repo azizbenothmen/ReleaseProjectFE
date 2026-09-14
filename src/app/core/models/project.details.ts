@@ -34,3 +34,13 @@ export interface ProjectTag {
   branch?: string;
   createdAt?: string;
 }
+
+export interface AuditLog {
+  id: string;
+  action: string;
+  actionCategory: string;
+  actor: string;
+  date: string;
+  description: string;
+  status: string;
+}
