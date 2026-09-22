@@ -165,4 +165,12 @@
   </div>
 </div>
 
+  <!-- IMPORT REPO MODAL -->
+  <app-import-repo-modal
+    [isOpen]="showImportModal"
+    [projectId]="selectedProjectIdForImport"
+    (closeModal)="closeImportModal()"
+    (repoImported)="onRepoImported($event)">
+  </app-import-repo-modal>
+
 </div>

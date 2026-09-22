@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ProjectDetail, ProjectRepo, ProjectTag, ScmProvider, AuditLog } from '../../core/models/project.details';
 import { ProjectStatus, CurrentUser } from '../../core/models/project.model';
 import { ProjectService } from '../../core/services/project.service';
+import { ImportRepoModalComponent } from '../import-repo-modal/import-repo-modal.component';
 
 type TabId = 'overview' | 'repos' | 'tags' | 'activity';
 
@@ -24,7 +25,7 @@ export interface EnrichedTag extends ProjectTag {
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ImportRepoModalComponent],
   templateUrl: './project.info.html',
   styleUrl: './project.info.css'
 })
@@ -48,7 +49,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   deleting = signal(false);
   showDeleteModal = signal(false);
+  showImportModal = signal(false);
   copiedSha = signal<string | null>(null);
+
+  importedRepoIds = computed<number[]>(() =>
+    this.project()?.repos?.map((r) => r.id) ?? []
+  );
 
   notification = signal<{ type: 'success' | 'error'; message: string } | null>(null);
   private notificationTimeout: any;
@@ -232,10 +238,19 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   importRepo(): void {
-    const id = this.project()?.id;
-    if (id !== undefined) {
-      this.router.navigate(['projet', id, 'repo']);
+    this.showImportModal.set(true);
+  }
+
+  closeImportModal(): void {
+    this.showImportModal.set(false);
+  }
+
+  onRepoImported(repo: any): void {
+    const p = this.project();
+    if (p && p.id != null) {
+      this.fetchProject(String(p.id));
     }
+    this.showToast('success', `Repository "${repo.name}" imported successfully.`);
   }
 
   goToTag(repo: ProjectRepo): void {

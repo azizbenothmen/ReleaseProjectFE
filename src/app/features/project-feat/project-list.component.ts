@@ -5,11 +5,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ProjectService } from '../../core/services/project.service';
 import { Project, ProjectStatus } from '../../core/models/project.model';
 import { switchMap } from 'rxjs';
+import { ImportRepoModalComponent } from '../import-repo-modal/import-repo-modal.component';
 
 @Component({
   selector: 'app-project-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ImportRepoModalComponent],
   templateUrl: './project-list.html',
   styleUrls: ['./project-list.css']
 })
@@ -159,8 +160,22 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     });
   }
 
+  showImportModal = false;
+  selectedProjectIdForImport: number | string | null = null;
+
   goToImportRepo(project: Project): void {
-    this.router.navigate(['projet', project.id,'repo']);
+    if (!project.id) return;
+    this.selectedProjectIdForImport = project.id;
+    this.showImportModal = true;
+  }
+
+  closeImportModal(): void {
+    this.showImportModal = false;
+    this.selectedProjectIdForImport = null;
+  }
+
+  onRepoImported(repo: any): void {
+    this.showNotification('success', `Repository "${repo.name}" imported successfully.`);
   }
 
   projectToDelete: Project | null = null;

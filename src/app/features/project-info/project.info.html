@@ -372,4 +372,13 @@
     </div>
   }
 
+  <!-- Import Repository Modal -->
+  <app-import-repo-modal
+    [isOpen]="showImportModal()"
+    [projectId]="p.id ?? null"
+    [alreadyImportedIds]="importedRepoIds()"
+    (closeModal)="closeImportModal()"
+    (repoImported)="onRepoImported($event)">
+  </app-import-repo-modal>
+
 }
