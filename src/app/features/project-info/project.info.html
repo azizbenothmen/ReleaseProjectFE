@@ -32,10 +32,7 @@
         }
       </div>
     </div>
-    <div class="header-actions">
-      <button type="button" class="btn-primary" (click)="importRepo()">+ Import Repository</button>
-        
-    </div>
+    
   </div>
 
   <!-- Meta Card -->
@@ -143,17 +140,7 @@
         </div>
 
         <div class="card">
-          <h3>GitOps & Release Metrics</h3>
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-number">{{ repoCount() }}</div>
-              <div class="stat-label">Linked Repositories</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-number">{{ tagCount() }}</div>
-              <div class="stat-label">Total Release Tags</div>
-            </div>
-          </div>
+          
 
           <div class="recent-tags-header">
             <span class="overview-label">Recent Release Tags</span>
@@ -384,5 +371,14 @@
       </div>
     </div>
   }
+
+  <!-- Import Repository Modal -->
+  <app-import-repo-modal
+    [isOpen]="showImportModal()"
+    [projectId]="p.id ?? null"
+    [alreadyImportedIds]="importedRepoIds()"
+    (closeModal)="closeImportModal()"
+    (repoImported)="onRepoImported($event)">
+  </app-import-repo-modal>
 
 }

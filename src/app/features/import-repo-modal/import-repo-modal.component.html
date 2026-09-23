@@ -1,0 +1,126 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-title-group">
+        <h3>Import Repository</h3>
+        <p class="header-sub">Select a repository to link to your project</p>
+      </div>
+      <button type="button" class="btn-close" (click)="close()" aria-label="Close modal">×</button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+
+      <!-- Notifications -->
+      <div class="alert alert-success" *ngIf="successNotification">
+        <span class="alert-icon">✓</span>
+        <span>{{ successNotification }}</span>
+      </div>
+
+      <div class="alert alert-error" *ngIf="errorMessage">
+        <span class="alert-icon">✕</span>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Real-Time Search Bar -->
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Filter repositories by name..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          aria-label="Search repositories"
+        />
+        <button type="button" class="clear-search" *ngIf="searchTerm" (click)="searchTerm = ''; onSearch()">×</button>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="state-container">
+        <div class="spinner"></div>
+        <p>Loading repositories...</p>
+      </div>
+
+      <!-- Repositories List (Top 4 displayed per page) -->
+      <div class="repo-list" *ngIf="!loading">
+        <div class="repo-card" *ngFor="let repo of pagedRepos">
+          <div class="repo-details">
+            <div class="repo-title-row">
+              <span class="repo-name">{{ repo.name }}</span>
+            </div>
+
+            <div class="repo-meta-row">
+              <span class="repo-owner" *ngIf="repo.owner?.login">
+                {{ repo.owner?.login }}
+              </span>
+              <span class="meta-dot" *ngIf="repo.owner?.login && getUpdatedDate(repo)">•</span>
+              <span class="repo-date" *ngIf="getUpdatedDate(repo)">
+                Updated {{ getUpdatedDate(repo) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="repo-action">
+            <button
+              type="button"
+              class="btn-select-repo"
+              [class.imported]="isAlreadyImported(repo.id)"
+              [disabled]="isAlreadyImported(repo.id) || importingRepoId === repo.id"
+              (click)="importRepo(repo)"
+            >
+              <span *ngIf="importingRepoId === repo.id" class="btn-spinner"></span>
+              <span *ngIf="importingRepoId === repo.id">Importing...</span>
+              <span *ngIf="importingRepoId !== repo.id && isAlreadyImported(repo.id)">✓ Imported</span>
+              <span *ngIf="importingRepoId !== repo.id && !isAlreadyImported(repo.id)">Import</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="filteredRepos.length === 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          <p>No repository found matching "{{ searchTerm }}"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer / Pagination -->
+    <div class="modal-footer" *ngIf="!loading && filteredRepos.length > pageSize">
+      <div class="pagination">
+        <button
+          type="button"
+          class="page-nav"
+          (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1"
+          title="Previous Page"
+        >‹</button>
+
+        <button
+          type="button"
+          class="page-number"
+          *ngFor="let page of pageNumbers"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+        >{{ page }}</button>
+
+        <button
+          type="button"
+          class="page-nav"
+          (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+          title="Next Page"
+        >›</button>
+      </div>
+    </div>
+
+  </div>
+</div>
